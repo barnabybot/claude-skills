@@ -15,13 +15,16 @@ Run `/reflect` or `/reflect [skill-name]` after a session where you used a skill
 
 ### Step 1: Identify the Skill
 
-If skill name not provided, ask:
+If skill name not provided:
+
+1. **Check user's CLAUDE.md** for declared skill locations
+2. **Scan known directories**: `~/.claude/skills/`, iCloud sync paths, project `.claude/skills/`
+3. **List actual installed skills** for selection (not generic examples)
+4. **Accept full paths** if user provides one (e.g., `/path/to/skill` or `skill-name`)
 
 ```
 Which skill should I analyze this session for?
-- frontend-design
-- code-reviewer
-- [other]
+[List skills actually found in user's environment]
 ```
 
 ### Step 2: Analyze the Conversation
@@ -84,16 +87,18 @@ Avoid: pure red (#FF0000) on black, green on red (colorblind users)
 
 ### Step 4: If Approved
 
-1. Read the current skill file from `~/.claude/skills/[skill-name]/SKILL.md`
+1. Read the current skill file from the identified path
 2. Apply the changes using the Edit tool
-3. Run git commands:
+3. Run git commands from the skill's parent directory:
    ```bash
-   cd ~/.claude/skills
+   cd [skill-parent-directory]  # Use actual path, not hardcoded
    git add [skill-name]/SKILL.md
    git commit -m "[skill]: [change summary]"
    git push origin main
    ```
 4. Confirm: "Skill updated and pushed to GitHub"
+
+**Note:** If the skill directory is not a git repo, skip git operations and just confirm the edit was saved.
 
 ### Step 5: If Declined
 
@@ -101,14 +106,27 @@ Ask: "Would you like to save these observations for later review?"
 
 If yes, append to `~/.claude/skills/[skill-name]/OBSERVATIONS.md`
 
+## Custom Skill Locations
+
+Skills may be located in various places:
+
+| Location | Example |
+|----------|---------|
+| Default | `~/.claude/skills/` |
+| iCloud sync | `~/Library/Mobile Documents/com~apple~CloudDocs/claude-code/skills/` |
+| Project-local | `./.claude/skills/` |
+| User-specified | Any path provided by user |
+
+When user provides a full path, use that path directly. When given just a skill name, search known locations.
+
 ## Git Integration
 
 This skill has permission to:
-- Read skill files from `~/.claude/skills/`
+- Read skill files from any user-specified location
 - Edit skill files (with user approval)
-- Run `git add`, `git commit`, `git push` in the skills directory
+- Run `git add`, `git commit`, `git push` in the skill's parent directory
 
-The skills repo should be initialized at `~/.claude/skills` with a remote origin.
+The skills directory should be a git repo with a remote origin for push to work.
 
 ## Important Notes
 
