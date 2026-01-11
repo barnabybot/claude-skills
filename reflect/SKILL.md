@@ -11,6 +11,19 @@ Analyze the current conversation and propose improvements to skills based on wha
 
 Run `/reflect` or `/reflect [skill-name]` after a session where you used a skill.
 
+## Successive Reflections
+
+If `/reflect` is run multiple times in the same session:
+
+1. **Reference prior changes** - Acknowledge any skill edits made earlier
+2. **Look for new signals** - Focus on what happened AFTER the last reflection
+3. **Avoid duplicate proposals** - Don't re-propose changes already applied
+
+For **meta-reflection** (reflecting on reflect itself):
+- This is a valid use case for iterative skill improvement
+- Check if earlier reflect changes are working as intended
+- Propose refinements based on the reflection workflow itself
+
 ## Workflow
 
 ### Step 1: Identify the Skill
