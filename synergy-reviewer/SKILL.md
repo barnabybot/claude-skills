@@ -85,9 +85,9 @@ Challenge prompts:
 - ✅ **Quantifiable**: Transaction volume × interchange rate
 - ✅ **Low execution risk**: Contractual/system change, not behavioural
 
-If the answer is unclear, the synergy may not qualify as "Big S" and should be:
-- Reclassified as a transaction-enabled opportunity (qualitative)
+If the answer is unclear, it is **not a synergy** and should be:
 - Excluded from quantified synergy statement
+- Potentially included as qualitative "transaction-enabled opportunity" (not quantified)
 - Flagged for further analysis
 
 ### Step 4: Evidence Checklist
