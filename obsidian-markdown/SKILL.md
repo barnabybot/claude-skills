@@ -518,7 +518,34 @@ Notes named after people (e.g., "Howard Marks.md", "Bill Gurley - Notes.md") sho
 ```yaml
 categories:
   - "[[People]]"
+person: "[[Howard Marks]]"
 ```
+
+The `person` property links to the person's note for relationship mapping.
+
+### Rating Scale (Kepano 1-7)
+
+Use the kepano scale to rate note quality or content value:
+
+| Rating | Meaning | Use for |
+|--------|---------|---------|
+| 7 | Perfect, life-changing | Profound insights, must revisit |
+| 6 | Excellent, worth repeating | High-quality, substantial content |
+| 5 | Good, enjoyable | Solid content with clear value |
+| 4 | Passable, works in a pinch | Average notes, basic utility |
+| 3 | Bad, don't do this | Poor quality, consider deleting |
+| 2 | Atrocious, avoid | Very low value |
+| 1 | Evil, harmful | Misleading or wrong information |
+
+```yaml
+rating: 6
+```
+
+Rating factors:
+- Content length and depth
+- Structure (headers, bullets, quotes)
+- Topic quality (evergreen vs transient)
+- Insight density (lessons, principles, frameworks)
 
 ### Topic Categories
 
