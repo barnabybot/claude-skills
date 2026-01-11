@@ -72,6 +72,18 @@ add_action('graphql_register_types', function() {
 
 ## Configuration
 
+### barnabyrobson.org Credentials
+
+```
+Site:        https://barnabyrobson.org
+GraphQL:     https://barnabyrobson.org/graphql
+Username:    robson.barnaby@gmail.com
+App Password: icpK qKp7 ek2M 0vCF yUIc jdJB
+App Name:    Claude Code
+```
+
+### Generic Config
+
 Create a `config.json` in the skill directory:
 
 ```json
@@ -175,3 +187,56 @@ Claude will:
 6. Ask for confirmation
 7. Run `yoast_batch_updater.py --apply` to apply changes
 8. Report results with success/failure counts
+
+## Page Builder Migration
+
+When migrating content from page builders (GreenShift, Elementor, etc.) to native blocks:
+
+### Pre-Migration Checklist
+
+1. **Check for block comments** - If content lacks `<!-- wp: -->` comments, it relies on plugin rendering
+2. **Identify block types** - Query the content for plugin-specific patterns (e.g., `gspb` for GreenShift)
+3. **Categorize complexity**:
+   - ✅ **Safe to migrate**: Simple layout blocks (row, column, container)
+   - ⚠️ **Review carefully**: Images, buttons, headings with custom styling
+   - ❌ **Do not migrate**: Dynamic queries, carousels, sliders, swipers, maps with custom data
+
+### NEVER Migrate
+
+- Pages using dynamic query builders (post grids that fetch content)
+- Carousel/slider/swiper components
+- Content where removing plugin CSS breaks the layout entirely
+- Pages without standard WordPress block comments
+
+### Migration Workflow
+
+1. **Audit first** - List all items using the page builder and categorize by block types
+2. **Test one** - Migrate a single simple item and verify it renders correctly
+3. **Verify before batch** - Always confirm the test migration looks correct before proceeding
+4. **Keep rollback ready** - Ensure revisions exist; know how to restore quickly
+
+### Rollback Procedure
+
+If migration breaks a page:
+```graphql
+# Fetch revisions
+query {
+  page(id: "ID", idType: DATABASE_ID) {
+    revisions(first: 10) {
+      nodes { databaseId date content }
+    }
+  }
+}
+
+# Restore from revision
+mutation {
+  updatePage(input: {id: "ID", content: "REVISION_CONTENT"}) {
+    page { title }
+  }
+}
+```
+
+### Lesson Learned
+
+GreenShift reference count alone doesn't indicate migration complexity. A page with 68 references
+using dynamic query builders is far more complex than one with 500 references using only layout blocks.
