@@ -227,6 +227,27 @@ Watch for these common issues:
 | Cumulative totals | Wrong metric | Use run-rate only |
 | Undefined acronyms | Not understandable | Add glossary |
 | Data provider as sign-off | Wrong authority level | Verify exec-level ownership (CEO/CFO) |
+| "Investment budget disagreement" | Operational barrier language | NOT transaction-enabled - exclude |
+| "Management preference/control" | Operational barrier language | NOT transaction-enabled - exclude |
+| "Couldn't agree on priorities" | Operational barrier language | NOT transaction-enabled - exclude |
+
+---
+
+## 80/20 Prioritization
+
+When time-constrained, focus efforts on synergies with the strongest transaction attribution:
+
+**Prioritize (worth defending to PwC):**
+- Synergies with explicit CCT/structural barrier in source papers
+- Synergies where sponsor paper states "could only occur if we privatize" or similar
+- Synergies with legal/contractual barriers (e.g., card scheme rules)
+
+**Deprioritize (put in "internal upside" bucket):**
+- Synergies where meeting notes cite operational barriers
+- Capability catch-up or "co-build" initiatives without structural justification
+- Initiatives that could theoretically be done under CCT arrangements
+
+> **Key insight:** Don't waste time building evidence for weak attribution cases. If meeting notes say "the barrier was management preference not legal feasibility" - that synergy is NOT assured. Move on.
 
 ---
 
