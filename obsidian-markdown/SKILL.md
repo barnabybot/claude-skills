@@ -560,6 +560,65 @@ When organizing notes, consider topic longevity:
 - ToDo, Projects, Wishlist, Travel
 - Meeting-specific topics, dated events
 
+## Vault Organization (Kepano Method)
+
+### Folder Structure
+
+Minimal folders, organized by authorship:
+
+| Location | Content | Who wrote it |
+|----------|---------|--------------|
+| **Root** | Daily notes, personal notes, journals | You |
+| **References** | Things that EXIST you write ABOUT | You (about external things) |
+| **Clippings** | Things OTHERS WROTE you save | Others |
+| **Attachments** | Images, PDFs, media | N/A |
+| **Daily** | Daily notes (YYYY-MM-DD.md) | You |
+| **Templates** | Note templates | N/A |
+
+**The test:** Who wrote most of the words in the file?
+- You → Root or References
+- Someone else → Clippings
+
+### References vs Clippings
+
+**References** (things that exist you write about):
+- Books, movies, places, people, podcasts (as entities)
+- Mental models, quotes you curate
+- Your notes ABOUT something external
+
+**Clippings** (others' words you save):
+- Articles, essays by others
+- Tweet threads
+- Kindle highlights (author's words)
+- Podcast transcripts/clips (speaker's words)
+
+### Readwise Imports
+
+Readwise syncs highlights from various sources. Route by content type:
+
+| Source | Content | Destination |
+|--------|---------|-------------|
+| Kindle highlights | Author's words | Clippings |
+| Snipd podcast clips | Speaker's words | Clippings |
+| Article highlights | Author's words | Clippings |
+| Your book synthesis | Your thoughts | References |
+
+### Category vs Topic Rule
+
+**Category** = Has a template or Obsidian Base
+- Books, Podcasts, People, Quotes, Mental Models
+- Use `categories` property with wikilinks
+
+**Topic** = No template, thematic grouping
+- AI, Philosophy, Health, History
+- Use `topics` property with wikilinks
+
+### Pragmatic Exceptions
+
+Some folders may break minimal-folder rules for practical reasons:
+- **Website folder**: Published content (like Kepano's separate vault)
+- **Admin folders**: Sensitive docs (Health, Work, Personal Finance)
+
 ## Tags
 
 ```markdown
