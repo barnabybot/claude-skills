@@ -500,6 +500,39 @@ due: 2024-02-01T14:30:00
 - `aliases` - Alternative names for the note
 - `cssclasses` - CSS classes applied to the note
 
+### Property Conventions
+
+**Property names**: Use lowercase plural (categories, topics, authors, people)
+
+**Property values**: Use Title Case for entries:
+```yaml
+topics:
+  - "[[Career]]"      # ✓ Title Case
+  - "[[Writing]]"     # ✓ Title Case
+  - "[[career]]"      # ✗ lowercase
+```
+
+### People Detection
+
+Notes named after people (e.g., "Howard Marks.md", "Bill Gurley - Notes.md") should include:
+```yaml
+categories:
+  - "[[People]]"
+```
+
+### Topic Categories
+
+When organizing notes, consider topic longevity:
+
+**Evergreen topics** (lasting value - preserve):
+- Wisdom, Ideas, Investing, AI, Crypto, Writing, Reading
+- Philosophy, Psychology, Mental Models, Career
+- Health, Fitness, Technology, Economics
+
+**Transient topics** (time-bound - may become obsolete):
+- ToDo, Projects, Wishlist, Travel
+- Meeting-specific topics, dated events
+
 ## Tags
 
 ```markdown
