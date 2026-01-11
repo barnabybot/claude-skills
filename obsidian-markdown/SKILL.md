@@ -606,12 +606,16 @@ Readwise syncs highlights from various sources. Route by content type:
 ### Category vs Topic Rule
 
 **Category** = Has a template or Obsidian Base
-- Books, Podcasts, People, Quotes, Mental Models
 - Use `categories` property with wikilinks
 
+**Valid Categories:**
+Clippings, Books, Podcasts, Podcast episodes, People, Quotes, Mental Models, Investments, Investing, Travel Inventory, Recipes, Camera Gear, Coffee Tasting Log, Midjourney, Plants, Physical Assets, IDs & Certificates, Companies, Contacts, Events, Meetings, Projects, Crypto
+
 **Topic** = No template, thematic grouping
-- AI, Philosophy, Health, History
 - Use `topics` property with wikilinks
+
+**Common Topics:**
+AI, Business, Programming, Productivity, Venture Capital, KPMG, DeFi, Stocks, Macro, Fiction, Non-Fiction, Writing, Wisdom, Personal Growth, Technology, Philosophy, Health, History, Geopolitics, Economics, Psychology, Leadership, Energy, China
 
 ### Pragmatic Exceptions
 
