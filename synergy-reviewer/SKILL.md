@@ -60,6 +60,31 @@ Challenge prompts:
 - "Why wasn't this done before under CCT arrangements?"
 - "Is this really transaction-enabled or organic growth?"
 
+#### Structural vs Operational Barriers
+
+**STRUCTURAL barriers** (stronger evidence for transaction-enablement):
+- Legal/regulatory constraints (e.g., card scheme rules, listing requirements)
+- Contractual obligations requiring arm's length treatment
+- Minority shareholder rights preventing preferential arrangements
+- Data sharing restrictions between separate entities
+
+**OPERATIONAL barriers** (weaker evidence - challenge these):
+- Investment budget prioritisation
+- Management attention/focus
+- Organisational alignment
+- Technology integration complexity
+
+> **Key insight:** If the barrier was operational (e.g., "we couldn't agree on investment"), it may NOT be transaction-enabled. If the barrier was structural (e.g., "card schemes require interchange between separate banks"), it IS transaction-enabled.
+
+#### Strong Transaction Attribution Example
+
+**On-Us Card Transactions:** Amber and Jade have >50% combined card market share in HK. Currently, Amber cards at Jade terminals pay interchange to Visa/Mastercard because card scheme rules require it between separate banking entities. Post-privatisation, these could be treated as "on-us" internal transfers, eliminating interchange fees.
+
+- ✅ **Structural barrier**: Card scheme rules legally require interchange between separate banks
+- ✅ **Cannot be done pre-transaction**: Separate listing prevents internal treatment
+- ✅ **Quantifiable**: Transaction volume × interchange rate
+- ✅ **Low execution risk**: Contractual/system change, not behavioural
+
 If the answer is unclear, the synergy may not qualify as "Big S" and should be:
 - Reclassified as a transaction-enabled opportunity (qualitative)
 - Excluded from quantified synergy statement
