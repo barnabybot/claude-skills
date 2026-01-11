@@ -326,6 +326,7 @@ For revenue synergies, verify each element:
 | Differential assumptions | Rationale provided | ⬜ |
 | Screenshots | Dated and sourced | ⬜ |
 | Output metric | Run-rate (not cumulative) | ⬜ |
+| **Transaction attribution quotes** | Direct quotes from source documents (stronger than interpretation) | ⬜ |
 | CTA included | Costs quantified | ⬜ |
 | ROI calculation | Methodology clear | ⬜ |
 
@@ -354,6 +355,10 @@ When reviewing, generate comments like:
 
 **On terminology:**
 > "What do the acronyms (e.g. [acronym]) mean?"
+
+**On transaction attribution:**
+> "What specific statement in the source document supports this being transaction-enabled? Direct quotes are stronger than interpretation."
+> "The source states '[exact quote]' - this evidences the structural barrier"
 
 ## Reliability Hierarchy
 
