@@ -26,7 +26,7 @@ For **meta-reflection** (reflecting on reflect itself):
 
 ## Workflow
 
-### Step 1: Identify the Skill
+### Step 1: Identify the Skill(s)
 
 If skill name not provided:
 
@@ -39,6 +39,8 @@ If skill name not provided:
 Which skill should I analyze this session for?
 [List skills actually found in user's environment]
 ```
+
+**Multiple skills**: If user provides multiple skill names (e.g., "skill-a, skill-b"), analyze each and present findings side-by-side or sequentially. Apply changes to each skill separately with individual commits.
 
 ### Step 2: Analyze the Conversation
 
@@ -63,6 +65,12 @@ Look for these signals in the current conversation:
 - Repeated patterns in user choices
 - Style preferences shown implicitly
 - Tool/framework preferences
+
+**Coverage Gaps** (potential new skills):
+- Session involved work no existing skill covers
+- User needed functionality outside current skill scope
+- Workarounds suggest missing skill or skill extension
+- Note these as potential new skill opportunities
 
 ### Step 3: Propose Changes
 
