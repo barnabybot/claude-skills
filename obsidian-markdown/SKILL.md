@@ -732,6 +732,47 @@ Internal notes:
 %%
 ````
 
+## Vault Maintenance
+
+When reorganizing vaults (moving, archiving, or deleting files), maintain link integrity:
+
+### After Moving Files
+
+1. **Find incoming links** - Search for `[[Moved File Name]]` across the vault
+2. **Update or remove** - Fix wikilinks in files that referenced the moved content
+3. **Check aliases** - If the file had aliases, search for those too
+
+### Archive vs Delete
+
+**Prefer archiving** over deletion for superseded content:
+- Move to an `Archive/` folder rather than delete
+- Preserves historical context and audit trail
+- Allows recovery if needed later
+
+```
+Vault/
+├── Active Files/
+└── Archive/
+    └── Superseded - 2024-01/
+        └── Old File.md
+```
+
+### Link Maintenance Patterns
+
+| Scenario | Action |
+|----------|--------|
+| File renamed | Update all `[[Old Name]]` → `[[New Name]]` |
+| File moved to Archive | Update links to point to new location, or replace with current equivalent |
+| File deleted | Remove or replace broken links |
+| File superseded | Update links to point to replacement file |
+
+### Finding Stale Links
+
+After reorganization, search for:
+- Links to archived files that should point elsewhere
+- Orphan links (files with no incoming links that may be obsolete)
+- Related Documents sections that reference old structure
+
 ## References
 
 - [Basic formatting syntax](https://help.obsidian.md/syntax)
