@@ -208,6 +208,28 @@ Output a structured review:
 Based on [factors], recommend [X]% contingency for this synergy.
 ```
 
+## Framework Compliance Check
+
+When creating or restructuring synergy bucket files from a framework document:
+
+| Check | Requirement |
+|-------|-------------|
+| **File count matches** | Output file count must equal framework bucket count exactly |
+| **1:1 mapping** | Each file maps to exactly one framework bucket |
+| **Consolidation complete** | If framework combines items into one bucket, create ONE file (not separate files) |
+| **Naming alignment** | File names match framework bucket names |
+
+**Before declaring completion, verify:**
+```
+Expected buckets: [count from framework]
+Created files: [count in folder]
+Match: ✅/❌
+```
+
+> **Key lesson:** If framework says "8 buckets" but folder contains 10 files, the restructuring is incomplete. Consolidate or archive excess files.
+
+---
+
 ## Quick Reference: Red Flags
 
 Watch for these common issues:
@@ -215,6 +237,7 @@ Watch for these common issues:
 | Red Flag | Issue | Action |
 |----------|-------|--------|
 | "Top-down percentage" | Not bottom-up | Require granular analysis |
+| **File count mismatch** | More files than framework buckets | Consolidate or archive excess |
 | "In line with past deals" | No specific analysis | Get comparable evidence |
 | "To be validated" | No business sign-off | Get owner confirmation |
 | "Capacity exists" | No headroom analysis | Quantify spare capacity |
@@ -348,6 +371,7 @@ For revenue synergies, verify each element:
 | Screenshots | Dated and sourced | ⬜ |
 | Output metric | Run-rate (not cumulative) | ⬜ |
 | **Transaction attribution quotes** | Direct quotes from source documents (stronger than interpretation) | ⬜ |
+| **Source page numbers** | All Bain/OW/strategy doc references include specific page numbers | ⬜ |
 | CTA included | Costs quantified | ⬜ |
 | ROI calculation | Methodology clear | ⬜ |
 
