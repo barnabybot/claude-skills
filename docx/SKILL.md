@@ -28,6 +28,13 @@ Use "Creating a new Word document" workflow
 - **Legal, academic, business, or government docs**
   Use **"Redlining workflow"** (required)
 
+### Batch Markdown Export to Word
+- **Multiple markdown files → single Word doc**
+  Use "Batch Markdown Export" workflow (pandoc-based)
+
+- **Obsidian vault export**
+  Use "Batch Markdown Export" workflow with frontmatter stripping
+
 ## Reading and analyzing content
 
 ### Text extraction
@@ -152,6 +159,68 @@ Example - Changing "30 days" to "60 days" in a sentence:
      ```
    - Check that no unintended changes were introduced
 
+
+## Batch Markdown Export to Word
+
+When combining multiple markdown files into a single Word document (e.g., exporting an Obsidian vault), use pandoc for better table handling and structure preservation.
+
+### Workflow
+
+1. **Combine markdown files** into a single file with page breaks between sections
+2. **Strip YAML frontmatter** if present (common in Obsidian)
+3. **Convert via pandoc** with table of contents
+
+### YAML Frontmatter Removal
+
+**CRITICAL**: Use `awk` not `sed` for frontmatter removal. The naive sed pattern `/^---$/,/^---$/d` removes ALL `---` delimited sections (including horizontal rules), not just the first frontmatter block.
+
+```bash
+# Correct: awk-based removal (first block only)
+remove_frontmatter() {
+    awk '
+    BEGIN { in_fm = 0; line_num = 0 }
+    {
+        line_num++
+        if (line_num == 1 && $0 == "---") { in_fm = 1; next }
+        if (in_fm == 1 && $0 == "---") { in_fm = 0; next }
+        if (in_fm == 0) { print }
+    }
+    '
+}
+
+# Usage: cat file.md | remove_frontmatter >> combined.md
+```
+
+### Conversion Script Template
+
+```bash
+#!/bin/bash
+OUTPUT_MD="/tmp/combined.md"
+OUTPUT_DOCX="output.docx"
+
+# Initialize with document metadata
+cat > "$OUTPUT_MD" << 'EOF'
+---
+title: "Document Title"
+date: "Date"
+---
+EOF
+
+# Add each file (with frontmatter stripped)
+for file in file1.md file2.md file3.md; do
+    cat "$file" | remove_frontmatter >> "$OUTPUT_MD"
+    echo -e "\n\n\\newpage\n" >> "$OUTPUT_MD"
+done
+
+# Convert to Word with TOC
+pandoc "$OUTPUT_MD" -o "$OUTPUT_DOCX" --toc --toc-depth=2
+```
+
+### Obsidian-Specific Notes
+
+- **Wikilinks** (`[[Page Name]]`) are preserved as text in the output - this is acceptable for reference documents
+- **Callouts** (`> [!note]`) convert to blockquotes
+- **Tables** are well-handled by pandoc (better than docx-js for bulk content)
 
 ## Converting Documents to Images
 
