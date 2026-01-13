@@ -732,6 +732,128 @@ Internal notes:
 %%
 ````
 
+## Meeting Note Format
+
+A common pattern for meeting notes in Obsidian:
+
+### YAML Frontmatter
+
+```yaml
+---
+categories:
+  - "[[Meetings]]"
+type: "[[Meetings]]"
+date: 2024-01-15
+time: "10:00"
+location: "Zoom"
+attendees:
+  - "[[Person One]]"
+  - "[[Person Two]]"
+  - "External Person Name"
+topics:
+  - "[[Topic One]]"
+  - "[[Topic Two]]"
+workstream: Revenue
+---
+```
+
+**Key points:**
+- Attendees with vault entries use wikilinks; external attendees use plain text
+- Topics link to concept/category notes in the vault
+- Date uses ISO format (YYYY-MM-DD), time in quotes
+
+### Standard Sections
+
+```markdown
+## About Meeting
+
+**Date & Time**: 15 Jan 2024, 10:00 AM
+**Location**: Zoom
+**Attendees**: [[Person One]], [[Person Two]], External Person
+
+## Meeting Outline
+
+1. First agenda item
+2. Second agenda item
+3. Third agenda item
+
+## Overview
+
+Summary of what was discussed and key outcomes.
+
+### Subsection for Major Topic
+
+Details about specific discussion point.
+
+## Action Items
+
+| Action | Owner | Deliverable |
+|--------|-------|-------------|
+| Do something | [[Person One]] | Output description |
+| Do another thing | [[Person Two]] | Another output |
+
+## Decisions
+
+1. First decision made
+2. Second decision made
+```
+
+## Batch Wikilink Addition
+
+When systematically adding backlinks across multiple files:
+
+### Rules
+
+1. **First occurrence only** (Kepano method) - Link only the first mention of each term per file
+2. **Skip YAML frontmatter** - Don't add links between `---` markers
+3. **Don't double-link** - Skip terms already in `[[wikilinks]]`
+4. **Whole word matching** - Don't link "CMB" inside "CMBank"
+
+### Display Name Syntax for People
+
+When linking first names that appear alone:
+
+```markdown
+Omar mentioned...        → [[Omar Malik|Omar]] mentioned...
+Rob confirmed...         → [[Rob Wall|Rob]] confirmed...
+```
+
+### Normalizing Variations
+
+Link common variations to their canonical note:
+
+```markdown
+Pathfinder project...    → [[Project Pathfinder]] project...
+the Skyline work...      → the [[Project Skyline]] work...
+Cedar integration...     → [[Project Cedar]] integration...
+```
+
+### Valid Link Targets
+
+Check the vault's bases/indexes for valid link targets:
+- **People/** folder or People.base
+- **Concepts/** folder or Concepts.base
+- **Business Lines/** or similar reference folders
+
+### Processing Large Vaults
+
+For vaults with many files:
+1. Extract all valid link targets from bases/indexes
+2. Process files in batches by folder
+3. Track which files were modified and what links were added
+
+## Vault-Specific Configuration
+
+**Always check for a vault-level CLAUDE.md** before processing files. Vault CLAUDE.md may define:
+
+- Custom taxonomy (categories, topics, types)
+- Vault-specific properties and their allowed values
+- Valid link targets from the vault's bases
+- Naming conventions for files and properties
+- Project-specific terms and their canonical forms
+
+The vault CLAUDE.md takes precedence over general Obsidian conventions.
+
 ## Vault Maintenance
 
 When reorganizing vaults (moving, archiving, or deleting files), maintain link integrity:
