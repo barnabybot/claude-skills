@@ -798,6 +798,105 @@ Details about specific discussion point.
 2. Second decision made
 ```
 
+### Synergy/Project Bucket Links
+
+When meetings discuss specific workstreams or project buckets, add a `synergy_buckets` property:
+
+```yaml
+synergy_buckets:
+  - "[[Bucket-02 - RBW Jade]]"
+  - "[[Bucket-04 - CMB Jade]]"
+  - "[[Bucket-06 - Merchant Acquiring Cards]]"
+```
+
+This enables bidirectional linking between meetings and the documents they inform.
+
+### Raw Transcript Processing
+
+When summarizing raw transcripts (e.g., from Otter.ai or similar), extract content into:
+
+```markdown
+## Key Themes
+
+Overview of main topics covered across the session(s).
+
+---
+
+## Meeting 1: [Topic Name]
+
+### Subsection
+
+Content organized by logical groupings.
+
+| Data | Presented | In Tables |
+|------|-----------|-----------|
+
+---
+
+## Key Decisions Made
+
+| # | Decision | Rationale |
+|---|----------|-----------|
+| 1 | Decision text | Why this was decided |
+| 2 | Another decision | Reasoning |
+
+---
+
+## Open Issues for Resolution
+
+| # | Issue | Owner | Status |
+|---|-------|-------|--------|
+| 1 | Issue description | [[Person]] | 🔴 Critical |
+| 2 | Another issue | [[Person]] | 🟡 In progress |
+
+---
+
+## Action Items
+
+| # | Action | Owner | Due |
+|---|--------|-------|-----|
+| 1 | Action description | [[Person]] | Date/ASAP |
+
+---
+
+## Key Quotes
+
+> "Verbatim quote from the meeting" - **Speaker Name**
+
+---
+
+## Raw Transcript
+
+*The raw transcript has been archived. Key content has been extracted above.*
+```
+
+### Meeting Cross-References
+
+When updating project documents (bucket files, synergy cases, etc.) with meeting content:
+
+**Use `<u>` tags to mark new additions from recent meetings:**
+
+```markdown
+### <u>2024-01-16 Project Review Meeting</u>
+
+<u>Per [[2024-01-16 Project Review Meeting]]:</u>
+
+<u>**Key Finding:**</u>
+<u>- Bullet point from meeting</u>
+<u>- Another finding</u>
+
+<u>**Decision Made:**</u>
+<u>| Column 1 | Column 2 |</u>
+<u>|----------|----------|</u>
+<u>| Data | Value |</u>
+```
+
+This pattern:
+- Visually distinguishes recent additions from original content
+- Provides audit trail of when content was added
+- Links back to source meeting for context
+- Uses underline (`<u>`) rather than bold/italic to avoid conflict with existing formatting
+
 ## Batch Wikilink Addition
 
 When systematically adding backlinks across multiple files:
