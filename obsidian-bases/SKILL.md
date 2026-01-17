@@ -146,6 +146,8 @@ filters:
 - When embedded: refers to the embedding file
 - In sidebar: refers to the active file in main content
 
+**Important:** When embedded, `this.file.name` returns the basename without the `.md` extension. For a file `Daily/2026-01-16.md`, `this.file.name` returns `2026-01-16`.
+
 ## Formula Syntax
 
 Formulas compute values from properties. Defined in the `formulas` section.
@@ -331,15 +333,41 @@ views:
 
 ### Cards View
 
+Cards view displays notes as visual cards, ideal for content with images like books, recipes, or media.
+
 ```yaml
 views:
   - type: cards
     name: "Gallery"
+    image: cover              # Property containing image URL or path
+    cardSize: 150             # Card width in pixels (default: 200)
+    imageFit: contain         # How image fits: contain | cover | fill
+    imageAspectRatio: 1.4     # Height/width ratio (1.4 = portrait/book, 0.75 = landscape)
     order:
       - file.name
-      - cover_image
-      - description
+      - author
+      - formula.stars
 ```
+
+**Card View Options:**
+
+| Option | Type | Description |
+|--------|------|-------------|
+| `image` | string | Property name containing image URL or vault path |
+| `cardSize` | number | Card width in pixels (default: 200) |
+| `imageFit` | string | `contain` (show full image), `cover` (fill card, crop), `fill` (stretch) |
+| `imageAspectRatio` | number | Height = width × ratio. Use 1.4 for books, 0.75 for landscape, 1 for square |
+
+**Image Property Sources:**
+- URL: `cover: "https://example.com/image.jpg"`
+- Vault path: `cover: "Attachments/book-covers/mybook.jpg"`
+- Wikilink: `cover: "[[Attachments/cover.png]]"`
+
+**Best Practices for Cards:**
+- Place card views first when content has images (makes them the default view)
+- Use `imageFit: contain` for book covers to show full artwork
+- Use `imageFit: cover` for photos/thumbnails where cropping is acceptable
+- Aspect ratio 1.4 works well for book covers, 0.5625 (16:9) for video thumbnails
 
 ### List View
 
@@ -434,7 +462,7 @@ views:
       - completed_date
 ```
 
-### Reading List Base
+### Reading List Base (Books)
 
 ```yaml
 filters:
@@ -443,40 +471,69 @@ filters:
     - file.hasTag("article")
 
 formulas:
+  stars: '"⭐".repeat(rating)'
   reading_time: 'if(pages, (pages * 2).toString() + " min", "")'
   status_icon: 'if(status == "reading", "📖", if(status == "done", "✅", "📚"))'
-  year_read: 'if(finished_date, date(finished_date).year, "")'
 
 properties:
   author:
     displayName: Author
-  formula.status_icon:
-    displayName: ""
+  formula.stars:
+    displayName: Rating
   formula.reading_time:
     displayName: "Est. Time"
 
 views:
+  # Card view FIRST for visual library browsing
   - type: cards
     name: "Library"
+    image: cover                # Property with cover image URL
+    cardSize: 150
+    imageFit: contain           # Show full book cover
+    imageAspectRatio: 1.4       # Portrait ratio for books
     order:
-      - cover
       - file.name
       - author
-      - formula.status_icon
+      - formula.stars
     filters:
       not:
         - 'status == "dropped"'
 
   - type: table
-    name: "Reading List"
-    filters:
-      and:
-        - 'status == "to-read"'
+    name: "All Books"
     order:
       - file.name
       - author
-      - pages
-      - formula.reading_time
+      - genre
+      - rating
+      - status
+
+  - type: cards
+    name: "Anti-Library"
+    image: cover
+    cardSize: 150
+    imageFit: contain
+    imageAspectRatio: 1.4
+    filters:
+      and:
+        - 'rating.isEmpty()'
+    order:
+      - file.name
+      - author
+
+  - type: cards
+    name: "Favorites"
+    image: cover
+    cardSize: 150
+    imageFit: contain
+    imageAspectRatio: 1.4
+    filters:
+      and:
+        - 'rating >= 5'
+    order:
+      - file.name
+      - author
+      - formula.stars
 ```
 
 ### Project Notes Base
@@ -549,6 +606,44 @@ views:
       - formula.word_estimate
       - file.mtime
 ```
+
+### Daily.base (Embedded in Daily Notes)
+
+For daily notes (Kepano method), create a base that shows notes linked to or created on a specific day. This base is embedded in each daily note via `![[Daily.base]]`.
+
+```yaml
+# Works when embedded in Daily/YYYY-MM-DD.md files
+# this.file.name resolves to the date (e.g., "2026-01-16")
+filters:
+  or:
+    - file.name.contains(this.file.name)           # Notes with date in filename
+    - created.toString().contains(this.file.name)  # Notes created on this date
+    - start.toString().contains(this.file.name)    # Events starting this date
+    - end.toString().contains(this.file.name)      # Events ending this date
+    - file.links.contains(this.file)               # Notes linking to this daily note
+
+properties:
+  file.name:
+    displayName: Entry
+  note.categories:
+    displayName: Categories
+  note.created:
+    displayName: Created
+
+views:
+  - type: table
+    name: Daily notes
+    order:
+      - file.name
+      - created
+      - categories
+```
+
+**Key points:**
+- `this.file.name` returns the date portion (e.g., `2026-01-16`) when embedded
+- `created.toString()` converts the frontmatter date to a string for matching
+- Works with notes that have `created: YYYY-MM-DD` in frontmatter OR date-prefixed filenames
+- The daily note template should just have `![[Daily.base]]` in the body
 
 ## Embedding Bases
 
