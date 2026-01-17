@@ -1,6 +1,6 @@
 ---
 name: 9-lov
-description: Use when analyzing businesses, evaluating M&A targets, developing strategy, conducting due diligence, or identifying value creation opportunities. Triggers on phrases like "analyze this business", "value levers", "where can we create value", "acquisition target", "strategic review"
+description: Use when analyzing businesses, evaluating M&A targets, developing strategy, conducting due diligence, or identifying value creation opportunities. Triggers on "9LoV", "9 LoV", "nine levers of value", "9 levers", "value levers", "analyze this business", "where can we create value", "acquisition target", "strategic review"
 ---
 
 # 9 Levers of Value (9 LoV)
