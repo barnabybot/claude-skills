@@ -1073,6 +1073,64 @@ mv "Bucket-08 - Old Name.md" "Bucket-10 - Old Name.md"
 - Relationship tables (`| **Bucket 8** | ...`)
 - Scorecard tables across multiple files
 
+## Batch Vault Operations
+
+When updating multiple files with consistent formatting (e.g., adding Meeting Cross-References sections to project bucket files):
+
+### Pattern: Cross-Reference Enrichment
+
+1. **Read the example file** - Identify the target format from an existing well-structured file
+2. **Inventory files to update** - Glob for all files matching the pattern (e.g., `Cost Synergies/*.md`)
+3. **Inventory source files** - Glob for all meeting files or other sources to extract from
+4. **Map relationships** - Identify which sources are relevant to which target files
+5. **Apply consistent formatting** - Add sections with proper wikilinks and structure
+
+### Using Parallel Agents
+
+For vaults with many files (>5 target files), dispatch parallel Sonnet agents grouped by theme or folder:
+
+```
+Agent 1: C01-C05 (Business line buckets)
+Agent 2: C06-C09 (CIB-related buckets)
+Agent 3: C10-C14 (Technology/support functions)
+...
+```
+
+**Benefits:**
+- Reduces token usage (Sonnet vs Opus for mechanical tasks)
+- Parallel execution speeds up processing
+- Each agent focuses on related files for better context
+
+**Agent prompt template:**
+```
+You are updating [file type] files in [vault path] with [content type].
+
+Your files to update:
+- [list of file paths]
+
+Source folder: [path to source files]
+
+Task:
+1. Read each target file
+2. Read ALL source files
+3. For each target, identify relevant sources
+4. Add a "## [Section Name]" section using this format:
+   [example format]
+
+Important:
+- Use wikilinks for people and file references
+- Include specific quotes using > blockquote format
+- Only include genuinely relevant content
+```
+
+### Quality Checks
+
+After batch operations:
+- Spot-check 2-3 files from different groups
+- Verify wikilink syntax is correct
+- Confirm formatting matches the example file
+- Check that content is substantive, not generic summaries
+
 ## References
 
 - [Basic formatting syntax](https://help.obsidian.md/syntax)
