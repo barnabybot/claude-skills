@@ -482,6 +482,20 @@ due: 2024-02-01T14:30:00
 ---
 ```
 
+### Template Date Variables
+
+**IMPORTANT:** In templates, always use dynamic date variables, never hardcoded dates.
+
+```yaml
+# ✓ CORRECT - uses template variable
+created: "{{date}}"
+
+# ✗ WRONG - hardcoded date will be wrong for all future notes
+created: 2026-01-02
+```
+
+The `{{date}}` syntax works with Obsidian's core Templates plugin. For Templater, use `<% tp.date.now("YYYY-MM-DD") %>`.
+
 ### Property Types
 
 | Type | Example |
@@ -574,6 +588,39 @@ Minimal folders, organized by authorship:
 | **Attachments** | Images, PDFs, media | N/A |
 | **Daily** | Daily notes (YYYY-MM-DD.md) | You |
 | **Templates** | Note templates | N/A |
+
+### Daily Notes (Kepano Method)
+
+Daily notes serve as link targets - you don't write in them, they aggregate notes created on or linked to that date.
+
+**File structure:**
+- Location: `Daily/YYYY-MM-DD.md` (e.g., `Daily/2026-01-16.md`)
+- Minimal content with embedded base view
+
+**Daily Note Template:**
+```yaml
+---
+tags:
+  - daily
+---
+## Notes
+
+![[Daily.base]]
+```
+
+**How it works:**
+- The embedded `Daily.base` shows all notes where:
+  - The `created` property matches the date
+  - The filename contains the date (e.g., `2026-01-16 Meeting Notes.md`)
+  - The note links to the daily note
+- Daily notes are created automatically by Obsidian's Daily Notes plugin
+- Configure in Settings → Daily notes: date format `YYYY-MM-DD`, folder `Daily`, template path
+
+**Obsidian settings required:**
+1. Enable Daily notes core plugin
+2. Set date format: `YYYY-MM-DD`
+3. Set new file location: `Daily`
+4. Set template file: `Templates/Daily Note Template`
 
 **The test:** Who wrote most of the words in the file?
 - You → Root or References
