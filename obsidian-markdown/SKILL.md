@@ -806,7 +806,7 @@ When meetings discuss specific workstreams or project buckets, add a `synergy_bu
 synergy_buckets:
   - "[[Bucket-02 - RBW Jade]]"
   - "[[Bucket-04 - CMB Jade]]"
-  - "[[Bucket-06 - Merchant Acquiring Cards]]"
+  - "[[Bucket-06 - Payments]]"
 ```
 
 This enables bidirectional linking between meetings and the documents they inform.
@@ -993,6 +993,38 @@ After reorganization, search for:
 - Links to archived files that should point elsewhere
 - Orphan links (files with no incoming links that may be obsolete)
 - Related Documents sections that reference old structure
+
+### Bulk Renumbering Pattern
+
+When files have numeric IDs (e.g., `Bucket-08`, `SYN-05`) and need renumbering:
+
+1. **Rename files** - Update filename to new number
+2. **Update frontmatter** - Change `bucket_id`, `synergy_id`, or similar property
+3. **Update internal references** - Change heading numbers, table references within the file
+4. **Update cross-references** - Search vault for `[[Old Name]]` and update to `[[New Name]]`
+5. **Update CLAUDE.md** - If vault has structure tables, update bucket/synergy listings
+
+**Workflow:**
+```bash
+# 1. Rename files (bash)
+mv "Bucket-08 - Old Name.md" "Bucket-10 - Old Name.md"
+
+# 2-3. Edit file content (use Edit tool)
+# - bucket_id: "Bucket-10"
+# - # Bucket 10: Title
+
+# 4. Search for cross-references
+# Use Grep to find [[Bucket-08 or "Bucket 8" references
+
+# 5. Update vault CLAUDE.md structure tables
+```
+
+**Common patterns requiring updates:**
+- Frontmatter ID properties (`bucket_id`, `synergy_id`)
+- H1 headings (`# Bucket 8:` → `# Bucket 10:`)
+- Framework Context sections (`> **Bucket 8** in the...`)
+- Relationship tables (`| **Bucket 8** | ...`)
+- Scorecard tables across multiple files
 
 ## References
 
