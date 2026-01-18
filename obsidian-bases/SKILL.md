@@ -705,6 +705,94 @@ filters:
         - 'due != ""'
 ```
 
+## Common Pitfalls
+
+### ❌ String vs Link Function
+
+**NEVER** use string `"[[Note]]"` for link property checks. **ALWAYS** use the `link()` function.
+
+```yaml
+# ✅ CORRECT - use link() function
+filters:
+  and:
+    - type.contains(link("Books"))
+    - genre.containsAny(link("Fiction"))
+
+# ❌ WRONG - string won't match link-typed properties
+filters:
+  and:
+    - type.containsAny("[[Books]]")
+    - genre.containsAny("[[Fiction]]")
+```
+
+### ❌ Image Property in Cards
+
+Use the **bare property name** for `image:`, not `note.property`:
+
+```yaml
+# ✅ CORRECT
+views:
+  - type: cards
+    image: feature
+    image: cover
+
+# ❌ WRONG
+views:
+  - type: cards
+    image: note.feature
+    image: note.cover
+```
+
+### ❌ Global vs View Filters
+
+**Global filters exclude items from ALL views.** View-level filters can only narrow results further, never expand them.
+
+For multi-audience bases (e.g., different readers, different statuses), use **view-level filters** instead of global exclusions:
+
+```yaml
+# ✅ CORRECT - view-level filtering for different audiences
+filters:
+  and:
+    - type.contains(link("Books"))
+
+views:
+  - name: "My Books"
+    filters:
+      or:
+        - readers.isEmpty()
+        - readers.containsAny("alice")
+
+  - name: "Bob's Books"
+    filters:
+      and:
+        - readers.containsAny("bob")
+
+# ❌ WRONG - global filter excludes bob's books from entire base
+filters:
+  and:
+    - type.contains(link("Books"))
+    - readers.containsAny("alice")  # Bob's books can't appear anywhere
+```
+
+### ❌ Property Names in Order Arrays
+
+In `order:` arrays, use **bare property names** (not `note.` prefixed):
+
+```yaml
+# ✅ CORRECT
+order:
+  - file.name
+  - author
+  - genre
+  - formula.stars
+
+# ❌ WRONG
+order:
+  - file.name
+  - note.author
+  - note.genre
+```
+
 ## References
 
 - [Bases Syntax](https://help.obsidian.md/bases/syntax)
