@@ -222,6 +222,25 @@ pandoc "$OUTPUT_MD" -o "$OUTPUT_DOCX" --toc --toc-depth=2
 - **Callouts** (`> [!note]`) convert to blockquotes
 - **Tables** are well-handled by pandoc (better than docx-js for bulk content)
 
+## Obsidian to Word (Quick)
+
+**Use this for single-file Obsidian→Word conversion.** Strips YAML frontmatter and wikilinks in one command:
+
+```bash
+cat "input.md" | awk 'BEGIN{in_fm=0;ln=0}{ln++;if(ln==1&&$0=="---"){in_fm=1;next}if(in_fm==1&&$0=="---"){in_fm=0;next}if(in_fm==0){print}}' | sed 's/\[\[[^]|]*|\([^]]*\)\]\]/\1/g; s/\[\[\([^]]*\)\]\]/\1/g' | pandoc -o "output.docx"
+```
+
+**What it does:**
+1. `awk` - Strips YAML frontmatter (first `---` block only)
+2. First `sed` - Converts aliased wikilinks `[[link|display]]` → `display`
+3. Second `sed` - Converts simple wikilinks `[[link]]` → `link`
+4. `pandoc` - Converts to Word with tables and formatting preserved
+
+**One-liner breakdown:**
+- Works with any Obsidian file (frontmatter optional)
+- Preserves markdown tables, headers, bold/italic, lists
+- Callouts become blockquotes (acceptable for most uses)
+
 ## Converting Documents to Images
 
 To visually analyze Word documents, convert them to images using a two-step process:
@@ -260,7 +279,7 @@ pdftoppm -jpeg -r 150 -f 2 -l 5 document.pdf page  # Converts only pages 2-5
 Required dependencies (install if not available):
 
 - **pandoc**: `sudo apt-get install pandoc` (for text extraction)
-- **docx**: `npm install -g docx` (for creating new documents)
+- **docx**: `npm install docx` in project directory (for creating new documents). Note: Global install (`npm install -g`) may fail with permission errors; prefer local project install.
 - **LibreOffice**: `sudo apt-get install libreoffice` (for PDF conversion)
 - **Poppler**: `sudo apt-get install poppler-utils` (for pdftoppm to convert PDF to images)
 - **defusedxml**: `pip install defusedxml` (for secure XML parsing)
