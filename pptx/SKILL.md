@@ -15,23 +15,34 @@ A user may ask you to create, edit, or analyze the contents of a .pptx file. A .
 ### DO NOT (for KPMG presentations):
 - ❌ Do NOT use PptxGenJS (loses branding)
 - ❌ Do NOT use html2pptx (loses branding)
-- ❌ Do NOT search for the template (use the fixed path below)
+- ❌ Do NOT search for templates (use the fixed paths below)
 - ❌ Do NOT try LibreOffice conversion
 - ❌ Do NOT create presentations from scratch
 
 ### ALWAYS:
-- ✅ Use python-pptx with the KPMG template
+- ✅ Use python-pptx with a KPMG template
+- ✅ Read the template's config.yaml for settings
 - ✅ Use the template-based workflow below
 
-**KPMG Template** (use this path directly, no searching):
+### KPMG Templates Location
 ```
-~/Library/Mobile Documents/com~apple~CloudDocs/claude-code/templates/kpmg/202512 AI in deal strategy.pptx
+~/Library/Mobile Documents/com~apple~CloudDocs/claude-code/templates/kpmg/
 ```
+
+**Available templates:**
+| Template | Path | Use For |
+|----------|------|---------|
+| KPMG 2022 | `KPMG-2022/template.pptx` | Standard KPMG presentations |
+
+Each template folder contains:
+- `template.pptx` - The PowerPoint template
+- `config.yaml` - Typography, colors, layouts, placeholder indices
+
+**Read config.yaml first** to get the correct settings for that template.
 
 ### Example Prompt That Works
 ```
-Create a KPMG-branded PowerPoint from [source file].
-Use the pptx skill and KPMG template. Follow the KPMG workflow (python-pptx with template, NOT PptxGenJS).
+Create a KPMG presentation using the KPMG-2022 template from [source file].
 ```
 
 ### KPMG Quick Workflow
@@ -640,7 +651,14 @@ If you don't need to remove template slides:
 
 ### KPMG Template-Specific Notes
 
-When working with KPMG templates (`202512 AI in deal strategy.pptx` or similar):
+**IMPORTANT**: Each KPMG template has a `config.yaml` file with all settings. Read the config first:
+```
+~/Library/Mobile Documents/com~apple~CloudDocs/claude-code/templates/kpmg/[TEMPLATE-NAME]/config.yaml
+```
+
+The config contains: colors, typography, layout indices, placeholder indices, and notes.
+
+**Reference below is for KPMG-2022** (also in its config.yaml):
 
 **Layout Index Reference**:
 - Layout 0: Cover page (dark blue background)
