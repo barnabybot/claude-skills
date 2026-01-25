@@ -40,6 +40,13 @@ Each template folder contains:
 
 **Read config.yaml first** to get the correct settings for that template.
 
+### Reference Script
+A complete working script is available at:
+```
+skills/pptx/scripts/kpmg_reference.py
+```
+Copy and adapt this script rather than writing from scratch. It includes all learnings (placeholder access bug, font override requirements, post-processing).
+
 ### Example Prompt That Works
 ```
 Create a KPMG presentation using the KPMG-2022 template from [source file].
@@ -49,8 +56,8 @@ Create a KPMG presentation using the KPMG-2022 template from [source file].
 
 1. **Load template** with python-pptx
 2. **Add slides at END** using template layouts (never delete during session)
-3. **Use placeholders directly**: `slide.placeholders[idx]`
-4. **Set font at BOTH levels** (paragraph + run) to override defaults
+3. **Use try/except for placeholders**: Never use `if X in slide.placeholders:` (broken)
+4. **Set ALL font properties at BOTH levels** (paragraph + run) including `italic=False`
 5. **For section dividers**: Use Layout 2, set `slide.background.fill` to dark blue
 6. **Save to temp file**
 7. **Post-process** ZIP/XML to remove original 30 template slides
@@ -65,13 +72,13 @@ Create a KPMG presentation using the KPMG-2022 template from [source file].
 | 21 | Back cover |
 
 ### KPMG Typography
-| Element | Font | Size | Color |
-|---------|------|------|-------|
-| Cover title | KPMG Bold | 88pt | White |
-| Content titles | KPMG Bold | 44pt | Dark Blue #0C233C |
-| Strapline | Arial | 18pt | Pacific Blue #00B8F5 |
-| Body | Arial | 16pt | Default |
-| Section dividers | KPMG Bold | 66pt | White on Dark Blue |
+| Element | Font | Size | Color | Notes |
+|---------|------|------|-------|-------|
+| Cover title | KPMG Bold | 88pt | White | |
+| Content titles | KPMG Bold | 44pt | Dark Blue #0C233C | |
+| Strapline | Arial | 18pt | Pacific Blue #00B8F5 | **Must set italic=False** |
+| Body | Arial | 16pt | Default | |
+| Section dividers | KPMG Bold | 66pt | White on Dark Blue | |
 
 See "KPMG Template-Specific Notes" section below for full details.
 
@@ -545,8 +552,10 @@ When you need to create a presentation that follows an existing template's desig
 To create visual thumbnail grids of PowerPoint slides for quick analysis and reference:
 
 ```bash
-python scripts/thumbnail.py template.pptx [output_prefix]
+python3 scripts/thumbnail.py template.pptx [output_prefix]
 ```
+
+**Note**: Requires LibreOffice (`soffice`). If unavailable, skip thumbnail generation and verify the presentation manually in PowerPoint.
 
 **Features**:
 - Creates: `thumbnails.jpg` (or `thumbnails-1.jpg`, `thumbnails-2.jpg`, etc. for large decks)
@@ -606,6 +615,74 @@ pdftoppm -jpeg -r 150 -f 2 -l 5 template.pdf slide  # Converts only pages 2-5
 - Avoid unnecessary print statements
 
 ## Known Limitations and Workarounds
+
+### python-pptx Placeholder Access Bug (CRITICAL)
+
+**Symptom**: Slides have titles but NO body content - all placeholder content silently fails to populate.
+
+**Root Cause**: The `in` operator does NOT work with `slide.placeholders` collection.
+
+```python
+# THIS DOES NOT WORK - always returns False even when placeholder exists!
+if 56 in slide.placeholders:  # ❌ Returns False
+    body_ph = slide.placeholders[56]
+
+# Direct access DOES work
+body_ph = slide.placeholders[56]  # ✅ Returns the placeholder
+```
+
+**Affected Pattern**:
+```python
+# BROKEN - silently skips all content
+if 56 in slide.placeholders:
+    slide.placeholders[56].text = "Content"
+```
+
+**Solution - Use try/except**:
+```python
+# CORRECT approach
+try:
+    body_ph = slide.placeholders[56]
+    body_ph.text = "Content"
+except KeyError:
+    print("Placeholder 56 not found")
+```
+
+**Complete Example**:
+```python
+def add_content_slide(prs, title, strapline, body_lines):
+    layout = prs.slide_layouts[5]
+    slide = prs.slides.add_slide(layout)
+
+    # Title (idx=0)
+    try:
+        title_ph = slide.placeholders[0]
+        set_text_with_formatting(title_ph, title, "KPMG Bold", Pt(44), True, False, DARK_BLUE)
+    except KeyError:
+        print(f"Warning: Title placeholder not found for '{title}'")
+
+    # Strapline (idx=18) - 18pt, NOT italic
+    try:
+        strap_ph = slide.placeholders[18]
+        set_text_with_formatting(strap_ph, strapline, "Arial", Pt(18), False, False, PACIFIC_BLUE)
+    except KeyError:
+        pass  # Strapline is optional
+
+    # Body (idx=56) with fallback
+    try:
+        body_ph = slide.placeholders[56]
+        set_multiline_text(body_ph, body_lines, "Arial", Pt(16), DARK_BLUE)
+    except KeyError:
+        try:
+            body_ph = slide.placeholders[17]  # Fallback index
+            set_multiline_text(body_ph, body_lines, "Arial", Pt(16), DARK_BLUE)
+        except KeyError:
+            print(f"Warning: Body placeholder not found for '{title}'")
+
+    return slide
+```
+
+This bug was discovered during the Lakehouse Presentation project (Jan 2026) where all 42 slides had titles but no body content because `if X in slide.placeholders:` checks silently skipped all body placeholder population.
 
 ### python-pptx Duplicate ZIP Entry Bug (CRITICAL)
 
@@ -683,18 +760,27 @@ The config contains: colors, typography, layout indices, placeholder indices, an
 - Section dividers: KPMG Bold, 66pt, White on Dark Blue
 - Contents title: KPMG Bold, 60pt, White on Dark Blue
 
-**Font Size Override Issue**:
-Placeholder shapes inherit font sizes from layout/master. To override, set font properties at BOTH paragraph level (`defRPr`) AND run level (`rPr`):
+**Font Override Issue - CRITICAL**:
+Placeholder shapes inherit ALL font properties from layout/master. You must explicitly set EVERY property you want to control at BOTH paragraph level (`defRPr`) AND run level (`rPr`):
 ```python
 # Set paragraph-level defaults (overrides layout/master)
 p.font.size = font_size
 p.font.name = font_name
 p.font.bold = bold
+p.font.italic = False  # CRITICAL: Explicitly set italic=False or it inherits from template
+if color:
+    p.font.color.rgb = color
+
 # Also set run-level properties
 run.font.size = font_size
 run.font.name = font_name
 run.font.bold = bold
+run.font.italic = False  # CRITICAL: Must set at both levels
+if color:
+    run.font.color.rgb = color
 ```
+
+**Common mistake**: Straplines inherit italic from template if not explicitly set to `False`. Always include `italic=False` in function calls for non-italic text.
 
 **Setting Slide Background Color** (RECOMMENDED approach for section dividers):
 Use Layout 2 (Subsection divider) and set the background programmatically - cleaner than fixing shapes in Layout 1:
@@ -739,6 +825,8 @@ def remove_draft_watermark(prs):
 ## Dependencies
 
 Required dependencies (should already be installed):
+
+**Note**: On macOS, use `python3` not `python` for all commands.
 
 - **markitdown**: `pip install "markitdown[pptx]"` (for text extraction from presentations)
 - **pptxgenjs**: `npm install -g pptxgenjs` (for creating presentations via html2pptx)
