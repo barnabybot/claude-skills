@@ -46,6 +46,73 @@ You need raw XML access for: comments, speaker notes, slide layouts, animations,
 
 ## Creating a new PowerPoint presentation **without a template**
 
+There are two approaches for creating presentations from scratch:
+
+### Option A: Direct PptxGenJS Approach (Recommended for structured content)
+
+When you have structured content with speaker notes (e.g., from a markdown presentation), use PptxGenJS directly with a type-based slide system. This bypasses HTML rendering entirely and is faster for presentations where content is well-defined.
+
+**When to use this approach:**
+- Content comes from markdown with clear slide structure
+- Speaker notes are a primary requirement
+- Slides follow repeatable patterns (title, bullets, two-column, quote, etc.)
+
+**Architecture:**
+```javascript
+const pptxgen = require('pptxgenjs');
+
+// Define slides as typed objects
+const slides = [
+  { type: 'title', title: 'Main Title', subtitle: 'Subtitle', notes: 'Speaker notes here...' },
+  { type: 'bullets', title: 'Agenda', items: [...], notes: '...' },
+  { type: 'twoColumn', title: '...', leftItems: [...], rightItems: [...], notes: '...' },
+  { type: 'section', number: 'PART 1', title: 'SECTION NAME', notes: '' },
+  // ... more slides
+];
+
+// Switch-based renderer
+function addSlide(pptx, data, idx) {
+  const slide = pptx.addSlide();
+  if (data.notes) slide.addNotes(data.notes);  // Add speaker notes
+
+  switch (data.type) {
+    case 'title':
+      slide.background = { color: '1C2833' };
+      slide.addText(data.title, { x: 0.5, y: 1.5, w: 9, h: 1.5, fontSize: 28, bold: true, color: 'FFFFFF' });
+      break;
+    case 'bullets':
+      // ... bullet layout
+      break;
+    // ... other types
+  }
+}
+
+// Generate presentation
+const pptx = new pptxgen();
+pptx.layout = 'LAYOUT_16x9';
+slides.forEach((s, i) => addSlide(pptx, s, i));
+pptx.writeFile({ fileName: 'output.pptx' });
+```
+
+**Common slide types to implement:**
+- `title` - Opening slide with title, subtitle, footer
+- `section` - Section divider with part number and title
+- `bullets` - Numbered or bulleted list with descriptions
+- `twoColumn` - Side-by-side comparison
+- `table` - Data in table format with headers
+- `quote` / `bigQuote` - Quotation with attribution
+- `comparison` - Old vs New / Before vs After layouts
+- `timeline` - Phased timeline with periods
+- `closing` - Final slide with call to action
+
+**Speaker Notes:**
+Use `slide.addNotes(text)` to add speaker notes. Notes support multiline strings:
+```javascript
+slide.addNotes('First paragraph of notes.\n\nSecond paragraph with more detail.');
+```
+
+### Option B: html2pptx Workflow (For complex visual designs)
+
 When creating a new PowerPoint presentation from scratch, use the **html2pptx** workflow to convert HTML slides to PowerPoint with accurate positioning.
 
 ### Design Principles

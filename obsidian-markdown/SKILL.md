@@ -779,6 +779,81 @@ Internal notes:
 %%
 ````
 
+## Presentation Format
+
+When creating presentations in markdown (for later conversion to PPTX or for presenting directly):
+
+### Structure
+
+```markdown
+---
+title: Presentation Title
+date: 2024-01-15
+categories:
+  - "[[Presentations]]"
+topics:
+  - "[[Topic One]]"
+  - "[[Topic Two]]"
+---
+
+# SLIDE 1: Title Slide
+
+Main presentation title here.
+
+Subtitle or tagline.
+
+Event name | Date
+
+### Speaker Notes — Slide 1
+
+Opening remarks and context for this slide...
+
+---
+
+# SLIDE 2: Agenda
+
+1. **First Topic** — Brief description
+2. **Second Topic** — Brief description
+3. **Third Topic** — Brief description
+
+### Speaker Notes — Slide 2
+
+Walk through the agenda points. Mention key takeaways...
+
+---
+
+# SLIDE 3: Section Divider
+
+## PART 1: SECTION TITLE
+
+### Speaker Notes — Slide 3
+
+Transition notes...
+```
+
+### Key Patterns
+
+- **Slide headers**: Use `# SLIDE N: Title` format for easy parsing
+- **Speaker notes**: Use `### Speaker Notes — Slide N` subsection after each slide
+- **Horizontal rules**: Use `---` between slides for visual separation
+- **Source references**: Include wikilinks to source material (e.g., `Per [[Article Name]]...`)
+- **Quotes**: Use blockquotes with attribution for cited material
+
+### Benefits
+
+- Plain text, version-controllable
+- Easy to convert to PPTX (content already structured)
+- Speaker notes travel with slides
+- Wikilinks enable source tracking
+- Can be presented directly in Obsidian with Slides plugin
+
+### Converting to PPTX
+
+When using the `/pptx` skill to convert:
+1. Each `# SLIDE N:` becomes a slide
+2. `### Speaker Notes` content goes to PowerPoint notes section
+3. Structure (bullets, quotes, tables) translates to slide layouts
+
 ## Meeting Note Format
 
 A common pattern for meeting notes in Obsidian:

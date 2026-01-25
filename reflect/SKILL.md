@@ -30,10 +30,12 @@ For **meta-reflection** (reflecting on reflect itself):
 
 If skill name not provided:
 
-1. **Check user's CLAUDE.md** for declared skill locations
-2. **Scan known directories**: `~/.claude/skills/`, iCloud sync paths, project `.claude/skills/`
+1. **MANDATORY FIRST: Read user's CLAUDE.md** — Check `~/.claude/CLAUDE.md` or the project's CLAUDE.md for declared skill locations. DO NOT skip this step. DO NOT guess paths. The CLAUDE.md file explicitly lists where skills are stored.
+2. **Only then scan directories** listed in CLAUDE.md (not generic defaults)
 3. **List actual installed skills** for selection (not generic examples)
 4. **Accept full paths** if user provides one (e.g., `/path/to/skill` or `skill-name`)
+
+**CRITICAL:** Do not search `~/.claude/skills/` or other default paths before reading CLAUDE.md. The user's configuration takes precedence.
 
 ```
 Which skill should I analyze this session for?
@@ -129,16 +131,18 @@ If yes, append to `~/.claude/skills/[skill-name]/OBSERVATIONS.md`
 
 ## Custom Skill Locations
 
-Skills may be located in various places:
+**IMPORTANT:** Always check CLAUDE.md first to find the user's actual skill location. Do not assume defaults.
 
-| Location | Example |
-|----------|---------|
-| Default | `~/.claude/skills/` |
-| iCloud sync | `~/Library/Mobile Documents/com~apple~CloudDocs/claude-code/skills/` |
-| Project-local | `./.claude/skills/` |
-| User-specified | Any path provided by user |
+Skills may be located in various places (check CLAUDE.md for which applies):
 
-When user provides a full path, use that path directly. When given just a skill name, search known locations.
+| Priority | Location | Example |
+|----------|----------|---------|
+| 1 | **User's CLAUDE.md** | Read `~/.claude/CLAUDE.md` first — it declares the actual path |
+| 2 | iCloud sync | `~/Library/Mobile Documents/com~apple~CloudDocs/claude-code/skills/` |
+| 3 | Project-local | `./.claude/skills/` |
+| 4 | Default | `~/.claude/skills/` |
+
+When user provides a full path, use that path directly. When given just a skill name, **read CLAUDE.md first** to find the configured location.
 
 ## Git Integration
 
