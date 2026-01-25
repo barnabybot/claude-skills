@@ -10,6 +10,45 @@ license: Proprietary. LICENSE.txt has complete terms
 
 A user may ask you to create, edit, or analyze the contents of a .pptx file. A .pptx file is essentially a ZIP archive containing XML files and other resources that you can read or edit. You have different tools and workflows available for different tasks.
 
+## KPMG Presentations (IMPORTANT - READ FIRST)
+
+**For KPMG-branded presentations, DO NOT use PptxGenJS or html2pptx.** These create presentations from scratch and lose KPMG branding (fonts, masters, logos).
+
+**ALWAYS use the template-based python-pptx workflow** with the KPMG template at:
+```
+~/Library/Mobile Documents/com~apple~CloudDocs/claude-code/templates/kpmg/202512 AI in deal strategy.pptx
+```
+
+### KPMG Quick Workflow
+
+1. **Load template** with python-pptx
+2. **Add slides at END** using template layouts (never delete during session)
+3. **Use placeholders directly**: `slide.placeholders[idx]`
+4. **Set font at BOTH levels** (paragraph + run) to override defaults
+5. **For section dividers**: Use Layout 2, set `slide.background.fill` to dark blue
+6. **Save to temp file**
+7. **Post-process** ZIP/XML to remove original 30 template slides
+
+### KPMG Layout Reference
+| Layout | Use For |
+|--------|---------|
+| 0 | Cover |
+| 2 | Section dividers (set background to dark blue #0C233C) |
+| 5 | One column content (placeholders: title=0, strapline=18, body=56) |
+| 6 | Two column content (placeholders: title=0, strapline=18, left=56, right=57) |
+| 21 | Back cover |
+
+### KPMG Typography
+| Element | Font | Size | Color |
+|---------|------|------|-------|
+| Cover title | KPMG Bold | 88pt | White |
+| Content titles | KPMG Bold | 44pt | Dark Blue #0C233C |
+| Strapline | Arial | 18pt | Pacific Blue #00B8F5 |
+| Body | Arial | 16pt | Default |
+| Section dividers | KPMG Bold | 66pt | White on Dark Blue |
+
+See "KPMG Template-Specific Notes" section below for full details.
+
 ## Reading and analyzing content
 
 ### Text extraction
@@ -48,11 +87,14 @@ You need raw XML access for: comments, speaker notes, slide layouts, animations,
 
 There are two approaches for creating presentations from scratch:
 
-### Option A: Direct PptxGenJS Approach (Recommended for structured content)
+### Option A: Direct PptxGenJS Approach (For NON-branded presentations only)
 
-When you have structured content with speaker notes (e.g., from a markdown presentation), use PptxGenJS directly with a type-based slide system. This bypasses HTML rendering entirely and is faster for presentations where content is well-defined.
+**WARNING: Do NOT use for KPMG or other branded presentations.** PptxGenJS creates from scratch and cannot use existing templates with fonts/masters/logos. For KPMG, see "KPMG Presentations" section above.
+
+When you have structured content with speaker notes and NO branding requirements, use PptxGenJS directly with a type-based slide system.
 
 **When to use this approach:**
+- NO corporate branding required (no KPMG, no templates)
 - Content comes from markdown with clear slide structure
 - Speaker notes are a primary requirement
 - Slides follow repeatable patterns (title, bullets, two-column, quote, etc.)
