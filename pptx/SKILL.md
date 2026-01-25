@@ -1,6 +1,6 @@
 ---
 name: pptx
-description: "Presentation creation, editing, and analysis. When Claude needs to work with presentations (.pptx files) for: (1) Creating new presentations, (2) Modifying or editing content, (3) Working with layouts, (4) Adding comments or speaker notes, or any other presentation tasks"
+description: "Presentation creation, editing, and analysis. When Claude needs to work with presentations (.pptx files) for: (1) Creating new presentations, (2) Modifying or editing content, (3) Working with layouts, (4) Adding comments or speaker notes, or any other presentation tasks. Also triggers on: KPMG presentation, KPMG slides, KPMG format, KPMG PowerPoint, KPMG branded"
 license: Proprietary. LICENSE.txt has complete terms
 ---
 
@@ -12,11 +12,26 @@ A user may ask you to create, edit, or analyze the contents of a .pptx file. A .
 
 ## KPMG Presentations (IMPORTANT - READ FIRST)
 
-**For KPMG-branded presentations, DO NOT use PptxGenJS or html2pptx.** These create presentations from scratch and lose KPMG branding (fonts, masters, logos).
+### DO NOT (for KPMG presentations):
+- ❌ Do NOT use PptxGenJS (loses branding)
+- ❌ Do NOT use html2pptx (loses branding)
+- ❌ Do NOT search for the template (use the fixed path below)
+- ❌ Do NOT try LibreOffice conversion
+- ❌ Do NOT create presentations from scratch
 
-**ALWAYS use the template-based python-pptx workflow** with the KPMG template at:
+### ALWAYS:
+- ✅ Use python-pptx with the KPMG template
+- ✅ Use the template-based workflow below
+
+**KPMG Template** (use this path directly, no searching):
 ```
 ~/Library/Mobile Documents/com~apple~CloudDocs/claude-code/templates/kpmg/202512 AI in deal strategy.pptx
+```
+
+### Example Prompt That Works
+```
+Create a KPMG-branded PowerPoint from [source file].
+Use the pptx skill and KPMG template. Follow the KPMG workflow (python-pptx with template, NOT PptxGenJS).
 ```
 
 ### KPMG Quick Workflow
