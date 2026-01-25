@@ -537,6 +537,130 @@ pdftoppm -jpeg -r 150 -f 2 -l 5 template.pdf slide  # Converts only pages 2-5
 - Avoid verbose variable names and redundant operations
 - Avoid unnecessary print statements
 
+## Known Limitations and Workarounds
+
+### python-pptx Duplicate ZIP Entry Bug (CRITICAL)
+
+**Symptom**: PowerPoint shows "found a problem with content" repair dialog when opening file.
+
+**Root Cause**: When using python-pptx to delete slides and save, it creates duplicate file entries in the ZIP archive (e.g., two `ppt/slides/slide7.xml` entries). This is a known limitation of the library.
+
+**Affected Operations**:
+- `prs.slides._sldIdLst` deletion
+- `prs.part.drop_rel()`
+- Any slide deletion or rearrangement
+
+**Solution - Add-Only with Post-Processing**:
+
+1. **Never delete slides during python-pptx session** - only add new slides
+2. **Add new slides at the END** using template layouts
+3. **Save to temporary file**
+4. **Post-process at ZIP/XML level** to remove unwanted slides:
+
+```python
+# Post-processing script to remove original slides
+import zipfile
+import os
+from xml.etree import ElementTree as ET
+
+# Steps:
+# 1. Extract PPTX (handling duplicates by keeping last occurrence)
+# 2. Modify ppt/presentation.xml to remove slide references
+# 3. Modify ppt/_rels/presentation.xml.rels to remove relationships
+# 4. Delete original slide XML files from ppt/slides/
+# 5. Update [Content_Types].xml
+# 6. Renumber remaining slides (slide31.xml → slide1.xml)
+# 7. Repack without duplicates
+```
+
+See the Lakehouse Presentation project for a complete implementation in `postprocess_pptx.py`.
+
+**Alternative - Template Placeholder Approach**:
+If you don't need to remove template slides:
+1. Modify content IN PLACE using `slide.placeholders[idx]`
+2. Hide unwanted slides or leave as appendix
+3. Never delete during python-pptx session
+
+### KPMG Template-Specific Notes
+
+When working with KPMG templates (`202512 AI in deal strategy.pptx` or similar):
+
+**Layout Index Reference**:
+- Layout 0: Cover page (dark blue background)
+- Layout 1: Section divider (has problematic light blue shapes - avoid, use Layout 2 instead)
+- Layout 2: Subsection divider (RECOMMENDED for section breaks - set background programmatically)
+- Layout 5: One Column Text (title idx=0, strapline idx=18, body idx=56)
+- Layout 6: Two Columns Text (title idx=0, strapline idx=18, left idx=56, right idx=57)
+- Layout 21: Back Cover
+- Layout 36: Sub-dividers (has light blue picture placeholder - avoid for text-heavy content)
+
+**KPMG Colors** (NO # prefix in color values):
+- KPMG Blue: `00338D` / RGB(0, 51, 141) - use for links, accents
+- Dark Blue: `0C233C` / RGB(12, 35, 60) - use for content slide titles
+- Pacific Blue: `00B8F5` / RGB(0, 184, 245) - use for straplines
+- Light Blue: `ACEAFF` / RGB(172, 234, 255) - background accent (often needs changing to dark blue)
+
+**Typography for Presentations** (screen display, larger than reports):
+- Cover title: KPMG Bold, 88pt, White
+- Content titles: KPMG Bold, 44pt, Dark Blue (#0C233C)
+- Strapline: Arial, 18pt, Pacific Blue (#00B8F5)
+- Body: Arial, 16pt
+- Section dividers: KPMG Bold, 66pt, White on Dark Blue
+- Contents title: KPMG Bold, 60pt, White on Dark Blue
+
+**Font Size Override Issue**:
+Placeholder shapes inherit font sizes from layout/master. To override, set font properties at BOTH paragraph level (`defRPr`) AND run level (`rPr`):
+```python
+# Set paragraph-level defaults (overrides layout/master)
+p.font.size = font_size
+p.font.name = font_name
+p.font.bold = bold
+# Also set run-level properties
+run.font.size = font_size
+run.font.name = font_name
+run.font.bold = bold
+```
+
+**Setting Slide Background Color** (RECOMMENDED approach for section dividers):
+Use Layout 2 (Subsection divider) and set the background programmatically - cleaner than fixing shapes in Layout 1:
+```python
+# Use Layout 2 for section dividers
+layout = prs.slide_layouts[2]  # Subsection divider
+slide = prs.slides.add_slide(layout)
+
+# Set slide background to dark blue
+background = slide.background
+fill = background.fill
+fill.solid()
+fill.fore_color.rgb = RGBColor(12, 35, 60)  # Dark Blue #0C233C
+
+# Set title with white text
+title_ph = slide.placeholders[0]
+# ... set text with white color
+```
+
+**Legacy: Fixing Light Blue Rectangle in Layout 1** (if Layout 2 not suitable):
+```python
+for shape in slide.shapes:
+    if hasattr(shape, 'fill'):
+        try:
+            if shape.fill.type is not None and shape.fill.fore_color.rgb == RGBColor(172, 234, 255):
+                shape.fill.solid()
+                shape.fill.fore_color.rgb = DARK_BLUE  # RGB(12, 35, 60)
+        except (TypeError, AttributeError):
+            pass
+```
+
+**Removing DRAFT Watermark**:
+```python
+def remove_draft_watermark(prs):
+    for master in prs.slide_masters:
+        for shape in list(master.shapes):
+            if hasattr(shape, 'text') and 'DRAFT' in shape.text.upper():
+                sp = shape._element
+                sp.getparent().remove(sp)
+```
+
 ## Dependencies
 
 Required dependencies (should already be installed):
