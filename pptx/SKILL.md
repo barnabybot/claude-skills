@@ -24,7 +24,7 @@ Copy and adapt `skills/pptx/scripts/kpmg_reference.py` rather than writing from 
 
 ### Quick Reference
 
-**Layouts**: 0=Cover, 2=Section divider, 5=One column, 6=Two column, 21=Back cover
+**Layouts**: 0=Cover, 3=Section divider, 10=One column, 11=Two column, 13=Back cover
 
 **Placeholder indices**: title=0, strapline=18, body=56, right column=57
 
@@ -82,7 +82,19 @@ python -m markitdown path-to-file.pptx
 python ooxml/scripts/unpack.py <office_file> <output_dir>
 ```
 
-Key paths: `ppt/slides/slide{N}.xml`, `ppt/notesSlides/`, `ppt/comments/`, `ppt/theme/theme1.xml`
+Key paths:
+- `ppt/presentation.xml` - Slide references and metadata
+- `ppt/slides/slide{N}.xml` - Individual slide contents
+- `ppt/notesSlides/notesSlide{N}.xml` - Speaker notes
+- `ppt/comments/` - Comments
+- `ppt/slideLayouts/` - Layout templates
+- `ppt/slideMasters/` - Master slides
+- `ppt/theme/theme1.xml` - Colors and fonts
+
+**Extracting typography/colors from existing presentations**:
+1. Read `ppt/theme/theme1.xml` for `<a:clrScheme>` (colors) and `<a:fontScheme>` (fonts)
+2. Examine `ppt/slides/slide1.xml` for actual `<a:rPr>` font usage
+3. Grep for `<a:solidFill>`, `<a:srgbClr>` patterns across XML files
 
 ---
 
@@ -189,6 +201,19 @@ python scripts/thumbnail.py template.pptx [output_prefix] [--cols 4]
 - Default: 5 columns, max 30 slides per grid
 - Requires LibreOffice
 
+## Converting Slides to Images
+
+```bash
+# 1. Convert PPTX to PDF
+soffice --headless --convert-to pdf template.pptx
+
+# 2. Convert PDF pages to JPEG
+pdftoppm -jpeg -r 150 template.pdf slide
+# Creates: slide-1.jpg, slide-2.jpg, etc.
+```
+
+Options: `-r 150` (DPI), `-f N` (first page), `-l N` (last page), `-png` (PNG format)
+
 ---
 
 ## Known Limitations
@@ -207,4 +232,5 @@ When deleting slides with python-pptx, duplicate ZIP entries cause PowerPoint re
 - **playwright**: `npm install -g playwright`
 - **sharp**: `npm install -g sharp`
 - **LibreOffice**: For PDF/thumbnail conversion
+- **Poppler**: For pdftoppm (PDF to images)
 - **defusedxml**: `pip install defusedxml`
