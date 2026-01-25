@@ -74,6 +74,13 @@ Look for these signals in the current conversation:
 - Workarounds suggest missing skill or skill extension
 - Note these as potential new skill opportunities
 
+**Context Bloat** (skill optimization):
+- Skill contains content Claude already knows (basic markdown, standard functions, LaTeX)
+- Duplicate sections covering the same information
+- Verbose examples where concise ones suffice
+- Reference data (tables, palettes) that could be extracted to separate files
+- Size exceeds ~8k chars without clear justification
+
 ### Step 3: Propose Changes
 
 Present findings using accessible colors (WCAG AA 4.5:1 contrast ratio):

@@ -32,6 +32,34 @@ The context window is a public good. Skills share the context window with everyt
 
 Prefer concise examples over verbose explanations.
 
+### Context Efficiency Guidelines
+
+**Target size**: <8k characters (~2k tokens) per skill. Skills >15k characters should be reviewed for bloat.
+
+**Skip content Claude already knows**:
+- Basic markdown syntax (headings, bold, lists, tables, code blocks)
+- Standard programming concepts (abs, ceil, floor, min, max, map, filter)
+- LaTeX math syntax
+- Mermaid diagram syntax
+- Common file formats and their structure
+- Standard library functions in popular languages
+
+**Only document domain-SPECIFIC knowledge**:
+- Proprietary syntax or formats (e.g., Obsidian wikilinks, callouts)
+- Tool-specific bugs and workarounds
+- Company/project conventions and preferences
+- Non-obvious integrations or workflows
+- Critical pitfalls that cause silent failures
+
+**Extract reference data**:
+- Move large tables (color palettes, function references) to separate files
+- Keep only essential quick-reference in SKILL.md
+- Reference extracted files with clear "see X for details"
+
+**Avoid duplication**:
+- Information should appear once, not repeated in multiple sections
+- If referencing external config (e.g., config.yaml), don't duplicate its contents inline
+
 ### Set Appropriate Degrees of Freedom
 
 Match the level of specificity to the task's fragility and variability:
