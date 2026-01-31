@@ -12,17 +12,64 @@ A user may ask you to create, edit, or analyze the contents of a .pptx file. A .
 
 ## KPMG Presentations (IMPORTANT - READ FIRST)
 
-### DO NOT (for KPMG presentations):
-- ❌ Do NOT use PptxGenJS (loses branding)
-- ❌ Do NOT use html2pptx (loses branding)
-- ❌ Do NOT search for templates (use the fixed paths below)
-- ❌ Do NOT try LibreOffice conversion
-- ❌ Do NOT create presentations from scratch
+### Three Approaches
 
-### ALWAYS:
-- ✅ Use python-pptx with a KPMG template
+**Approach 1: Simple (Placeholder-Only)** — For straightforward bullet-point content
+- Use python-pptx with template placeholders only
+- Fast, but limited to simple bulleted text in body area
+- Results look "dull" - just text in boxes
+
+**Approach 2: python-pptx Shapes (Template + Creative Content)** — For moderate visual sophistication
+- Use python-pptx with KPMG template (preserves logo, footers, masters)
+- Template placeholder for title only
+- python-pptx `add_shape()`, `add_table()`, `add_textbox()` for body content
+- Use `kpmg_creative_toolkit.py` for pre-built patterns
+- Limited by python-pptx's shape capabilities
+
+**Approach 3: Shape Transplant (RECOMMENDED)** — For maximum visual impact
+- Combines PptxGenJS creative power with KPMG template branding
+- python-pptx creates slide from template (preserves logo, footers, masters)
+- PptxGenJS creates creative content (cards, stats, tables, etc.)
+- **Transplant shapes** from PptxGenJS slide into template slide
+- Best of both worlds: full PptxGenJS/html2pptx creativity + full template branding
+
+```
+Template (python-pptx)          PptxGenJS
+┌─────────────────────┐         ┌─────────────────────┐
+│ KPMG Logo    Footer │         │  ┌───┐ ┌───┐ ┌───┐ │
+│ ─────────────────── │    +    │  │   │ │   │ │   │ │  →  Combined
+│ Title placeholder   │         │  └───┘ └───┘ └───┘ │
+│ [body area empty]   │         │  Stats, tables...  │
+└─────────────────────┘         └─────────────────────┘
+```
+
+### Rules for KPMG Presentations
+
+**ALWAYS:**
+- ✅ Use python-pptx to load KPMG template (preserves branding)
+- ✅ Use template layouts for cover, section dividers, back cover
+- ✅ Use template placeholder for title (idx 0)
+- ✅ Use KPMG typography (KPMG Bold for titles, Arial for body)
+- ✅ Use ONLY KPMG colors in all elements (see color list below)
 - ✅ Read the template's config.yaml for settings
-- ✅ Use the template-based workflow below
+
+**FOR CREATIVE CONTENT (Shape Transplant - RECOMMENDED):**
+- ✅ Create content slides with PptxGenJS (full creative freedom)
+- ✅ Transplant shapes into template slides (see workflow below)
+- ✅ Position content in body safe zone (Y: 1.07" to 6.17")
+- ✅ Use KPMG colors in PptxGenJS (hex without #: `0C233C`, `00B8F5`)
+
+**FOR SIMPLE CONTENT (python-pptx only):**
+- ✅ Use `kpmg_creative_toolkit.py` for pre-built patterns
+- ✅ Use python-pptx `add_shape()`, `add_table()`, `add_textbox()`
+- ✅ Clear body placeholder (idx 10) before adding custom shapes
+
+**DO NOT:**
+- ❌ Do NOT use PptxGenJS alone (loses template branding)
+- ❌ Do NOT use non-KPMG colors
+- ❌ Do NOT cover template footer/logo areas
+- ❌ Do NOT search for templates (use the fixed paths below)
+- ❌ **NEVER edit template XML directly** — corrupts file structure
 
 ### KPMG Templates Location
 ```
@@ -35,21 +82,143 @@ A user may ask you to create, edit, or analyze the contents of a .pptx file. A .
 | KPMG 2022 | `KPMG-2022/template-clean.pptx` | Standard KPMG presentations |
 
 Each template folder contains:
-- `template-clean.pptx` - The PowerPoint template (0 slides, 15 layouts)
+- `template-clean.pptx` - The PowerPoint template (0 slides, 13 layouts)
 - `config.yaml` - Typography, colors, layouts, placeholder indices
 
 **Read config.yaml first** to get the correct settings for that template.
 
-### Reference Script
-A complete working script is available at:
+### Reference Scripts
+Complete working scripts are available at:
 ```
-skills/pptx/scripts/kpmg_reference.py
+skills/pptx/scripts/kpmg_reference.py          # Simple placeholder-only approach
+skills/pptx/scripts/kpmg_creative_toolkit.py   # Hybrid with Anthropic-inspired patterns
 ```
-Copy and adapt this script rather than writing from scratch. It includes all learnings (placeholder access bug, font override requirements, post-processing).
+
+**Creative Toolkit Components** (Anthropic-inspired, KPMG colors):
+| Function | Use For |
+|----------|---------|
+| `add_three_column_cards()` | Key priorities, pillars, phases |
+| `add_two_column_text()` | Current/future state, comparisons |
+| `add_highlight_stat()` | KPIs, big numbers with labels |
+| `add_accent_table()` | Data tables with accent header |
+| `add_quote_box()` | Leadership quotes, testimonials |
+| `add_icon_list()` | Checklists, action items |
+| `add_comparison_boxes()` | Build vs buy, pros/cons |
+
+Copy and adapt these scripts rather than writing from scratch.
+
+### Visual Variety Patterns (CRITICAL for Engaging Presentations)
+
+**Problem Solved**: The "Shape Transplant" approach alone produces monotonous presentations - same bullet pattern on every slide. The original PptxGenJS presentations had visual variety that was lost.
+
+**Solution**: Match content type to visual pattern. Don't just use bullet lists for everything.
+
+**Pattern Catalog** (implemented in `Lakehouse_workspace/create_improved_presentation.py`):
+
+| Content Type | Pattern to Use | Function |
+|--------------|----------------|----------|
+| Agenda/TOC with 4-6 items | Numbered list with colored circles | `add_numbered_list()` |
+| Can/Can't do lists | Green ✓ / Red ✗ checklist | `add_checklist()` |
+| Old vs New / Current vs Future | Two-column with accent headers | `add_two_column_comparison()` |
+| Quotes with attribution | Quote box with Pacific Blue accent bar | `add_quote_box()` |
+| Data comparisons | Accent table with dark blue header | `add_accent_table()` |
+| 3 key points/phases/priorities | Three-column cards with numbered circles | `add_three_column_cards()` |
+| Key statistics/KPIs | Large highlight numbers | `add_highlight_stat()` |
+| Section dividers | Dark blue background + numbered circle | `add_section_divider(section_number=N)` |
+| Images with context | Image + text side by side | `add_image_with_text()` |
+| Standard bullets | Accent bar + bullet list | `add_bullet_slide()` |
+
+**Key Learnings from Lakehouse Presentation (Jan 2026)**:
+
+1. **Extract images from source**: Unzip the original PPTX, images are in `ppt/media/`. Copy them to workspace for embedding.
+
+2. **Content-type detection**: Before creating each slide, identify the content type:
+   - Lists with numbers → numbered list pattern
+   - Yes/No items → checklist pattern
+   - Comparisons → two-column pattern
+   - Quotes → quote box pattern
+   - Tables → accent table pattern
+
+3. **Section dividers with numbers**: Use numbered circles (1, 2, 3...) on section dividers to help audience track progress through presentation.
+
+4. **Embed images properly**: Use `slide.shapes.add_picture(path, x, y, width=Inches(N))` - don't leave as raw wikilinks or markdown.
+
+5. **Reference script**: See `/Users/barnabyrobson/Desktop/Lakehouse_workspace/create_improved_presentation.py` for complete implementation with all patterns.
+
+### Shape Transplant Workflow (RECOMMENDED)
+
+This approach gives you PptxGenJS's full creative power while preserving KPMG template branding.
+
+**Step 1: Create template slide with python-pptx**
+```python
+from pptx import Presentation
+from pptx.util import Pt
+from pptx.dml.color import RGBColor
+from copy import deepcopy
+
+TEMPLATE = "~/...claude-code/templates/kpmg/KPMG-2022/template-clean.pptx"
+template_prs = Presentation(TEMPLATE)
+layout = template_prs.slide_layouts[3]  # One column
+slide = template_prs.slides.add_slide(layout)
+
+# Set title using template placeholder
+title_ph = slide.placeholders[0]
+title_ph.text = "Slide Title Here"
+for p in title_ph.text_frame.paragraphs:
+    p.font.name = "KPMG Bold"
+    p.font.size = Pt(44)
+    p.font.color.rgb = RGBColor(12, 35, 60)
+```
+
+**Step 2: Create creative content with PptxGenJS**
+```javascript
+const pptxgen = require('pptxgenjs');
+const pptx = new pptxgen();
+pptx.layout = 'LAYOUT_16x9';
+const slide = pptx.addSlide();
+
+// Position content for KPMG body area (below title)
+// Safe zone: X: 1.07", Y: 1.2" to 6.17", Width: 11.0"
+
+// Three-column cards
+const cards = [
+    { title: 'Card 1', color: '0C233C', items: ['Item A', 'Item B'] },
+    { title: 'Card 2', color: '34556D', items: ['Item C', 'Item D'] },
+    { title: 'Card 3', color: '00338D', items: ['Item E', 'Item F'] }
+];
+
+cards.forEach((card, i) => {
+    const x = 1.07 + (3.5 * i);
+    slide.addShape('rect', { x, y: 1.3, w: 3.4, h: 2.5, fill: { color: card.color } });
+    slide.addText(card.title, { x: x + 0.2, y: 1.4, w: 3.0, h: 0.4, fontSize: 18, bold: true, color: 'FFFFFF' });
+    card.items.forEach((item, j) => {
+        slide.addText('• ' + item, { x: x + 0.2, y: 1.9 + (j * 0.4), w: 3.0, h: 0.3, fontSize: 14, color: 'FFFFFF' });
+    });
+});
+
+pptx.writeFile({ fileName: 'creative_content.pptx' });
+```
+
+**Step 3: Transplant shapes into template slide**
+```python
+# Load the PptxGenJS output
+creative_prs = Presentation("creative_content.pptx")
+creative_slide = creative_prs.slides[0]
+
+# Transplant all shapes from creative slide to template slide
+for shape in creative_slide.shapes:
+    new_shape = deepcopy(shape._element)
+    slide.shapes._spTree.append(new_shape)
+
+template_prs.save("output.pptx")
+```
+
+**Result:** KPMG logo, footer, and master styles preserved + PptxGenJS creative content.
 
 ### Example Prompt That Works
 ```
 Create a KPMG presentation using the KPMG-2022 template from [source file].
+Use the Shape Transplant approach for visually rich slides.
 ```
 
 ### KPMG Quick Workflow
@@ -58,27 +227,74 @@ Create a KPMG presentation using the KPMG-2022 template from [source file].
 2. **Add slides at END** using template layouts (never delete during session)
 3. **Use try/except for placeholders**: Never use `if X in slide.placeholders:` (broken)
 4. **Set ALL font properties at BOTH levels** (paragraph + run) including `italic=False`
-5. **For section dividers**: Use Layout 3, set `slide.background.fill` to dark blue
-6. **Save to temp file**
-7. **Post-process** ZIP/XML to remove original 30 template slides
+5. **For section dividers**: Use Layout 1, set `slide.background.fill` to dark blue
+6. **Save presentation**
+7. **Validate visually**: Generate thumbnails with `python scripts/thumbnail.py output.pptx` and inspect for layout issues
 
-### KPMG Layout Reference
+**Note:** KPMG-2022 template is empty (0 slides), so no post-processing needed to remove template slides.
+
+### KPMG Layout Reference (KPMG-2022: 13 layouts, indices 0-12)
 | Layout | Use For |
 |--------|---------|
 | 0 | Cover |
-| 3 | Section dividers (set background to dark blue #0C233C) |
-| 10 | One column content (placeholders: title=0, strapline=18, body=56) |
-| 11 | Two column content (placeholders: title=0, strapline=18, left=56, right=57) |
-| 13 | Back cover |
+| 1 | Section dividers (set background to dark blue #0C233C) |
+| 3 | One column content (placeholders: title=0, body=10) |
+| 4 | Two column content (placeholders: title=0, left=10, right=11) |
+| 5 | Back cover |
+
+### KPMG Content Safe Zone (for Hybrid approach)
+```
+Title area:     Y = 0.48" to 1.07"   ← Use template placeholder (idx 0)
+Content area:   Y = 1.07" to 6.43"   ← CREATIVE ZONE (no strapline - starts here)
+Footer area:    Y = 6.43" to 7.50"   ← Reserved for template master
+
+Left margin:   1.07"
+Right edge:    12.25"
+Content width: 11.18"
+```
+
+**Note:** No strapline - cleaner, modern design (Anthropic-inspired). Clear placeholder idx 18 if present.
+
+### KPMG Colors for Creative Elements
+When adding shapes/tables in the content area, use ONLY these colors:
+
+```python
+# python-pptx RGBColor definitions
+from pptx.dml.color import RGBColor
+
+# Primary
+DARK_BLUE = RGBColor(12, 35, 60)       # 0C233C - Backgrounds, titles
+PACIFIC_BLUE = RGBColor(0, 184, 245)   # 00B8F5 - Accents, straplines
+KPMG_BLUE = RGBColor(0, 51, 141)       # 00338D - Links, secondary accents
+
+# Charts / Callouts
+BLUE_GRAY = RGBColor(52, 85, 109)      # 34556D - Series 1
+AQUA = RGBColor(119, 168, 190)         # 77A8BE - Series 2
+LIGHT_TURQUOISE = RGBColor(150, 206, 228)  # 96CEE4 - Series 3
+BLUE_ACCENT_1 = RGBColor(210, 219, 249)    # D2DBF9 - Series 4
+BLUE = RGBColor(118, 210, 255)         # 76D2FF - Series 5
+
+# Utility
+GREY_5 = RGBColor(229, 229, 229)       # E5E5E5 - Backgrounds, dividers
+LIGHT_BLUE = RGBColor(172, 234, 255)   # ACEAFF - Light backgrounds (sparingly)
+WHITE = RGBColor(255, 255, 255)
+
+# RAG only
+RED = RGBColor(237, 33, 36)            # ED2124
+YELLOW = RGBColor(241, 196, 77)        # F1C44D
+GREEN = RGBColor(38, 153, 36)          # 269924
+```
 
 ### KPMG Typography
 | Element | Font | Size | Color | Notes |
 |---------|------|------|-------|-------|
 | Cover title | KPMG Bold | 88pt | White | |
 | Content titles | KPMG Bold | 44pt | Dark Blue #0C233C | |
-| Strapline | Arial | 18pt | Pacific Blue #00B8F5 | **Must set italic=False** |
 | Body | Arial | 16pt | Default | |
 | Section dividers | KPMG Bold | 66pt | White on Dark Blue | |
+| Accent text | Arial | 16pt | Pacific Blue #00B8F5 | For emphasis |
+
+**Note:** No strapline - cleaner, modern design.
 
 See "KPMG Template-Specific Notes" section below for full details.
 
@@ -737,12 +953,12 @@ The config contains: colors, typography, layout indices, placeholder indices, an
 
 **Reference below is for KPMG-2022** (also in its config.yaml):
 
-**Layout Index Reference** (15 layouts total, indices 0-14):
+**Layout Index Reference** (13 layouts total, indices 0-12):
 - Layout 0: Cover page (dark blue background)
-- Layout 3: 1_Subsection divider (RECOMMENDED for section breaks - set background programmatically)
-- Layout 10: One Column Text (title idx=0, strapline idx=18, body idx=56)
-- Layout 11: Two Columns Text (title idx=0, strapline idx=18, left idx=56, right idx=57)
-- Layout 13: 1_Back Cover light gradient
+- Layout 1: 1_Subsection divider (RECOMMENDED for section breaks - set background programmatically)
+- Layout 3: One Column Text (title idx=0, body idx=10)
+- Layout 4: Two Columns Text (title idx=0, left idx=10, right idx=11)
+- Layout 5: 1_Back Cover light gradient
 
 **KPMG Colors** (NO # prefix in color values):
 - KPMG Blue: `00338D` / RGB(0, 51, 141) - use for links, accents
@@ -753,10 +969,12 @@ The config contains: colors, typography, layout indices, placeholder indices, an
 **Typography for Presentations** (screen display, larger than reports):
 - Cover title: KPMG Bold, 88pt, White
 - Content titles: KPMG Bold, 44pt, Dark Blue (#0C233C)
-- Strapline: Arial, 18pt, Pacific Blue (#00B8F5)
 - Body: Arial, 16pt
 - Section dividers: KPMG Bold, 66pt, White on Dark Blue
 - Contents title: KPMG Bold, 60pt, White on Dark Blue
+- Accent text: Arial, 16pt, Pacific Blue (#00B8F5)
+
+**Note:** No strapline - cleaner, modern design (Anthropic-inspired).
 
 **Font Override Issue - CRITICAL**:
 Placeholder shapes inherit ALL font properties from layout/master. You must explicitly set EVERY property you want to control at BOTH paragraph level (`defRPr`) AND run level (`rPr`):
@@ -781,10 +999,10 @@ if color:
 **Common mistake**: Straplines inherit italic from template if not explicitly set to `False`. Always include `italic=False` in function calls for non-italic text.
 
 **Setting Slide Background Color** (RECOMMENDED approach for section dividers):
-Use Layout 3 (1_Subsection divider) and set the background programmatically:
+Use Layout 1 (1_Subsection divider) and set the background programmatically:
 ```python
-# Use Layout 3 for section dividers
-layout = prs.slide_layouts[3]  # 1_Subsection divider
+# Use Layout 1 for section dividers
+layout = prs.slide_layouts[1]  # 1_Subsection divider
 slide = prs.slides.add_slide(layout)
 
 # Set slide background to dark blue

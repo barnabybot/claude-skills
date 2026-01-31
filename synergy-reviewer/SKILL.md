@@ -1,16 +1,16 @@
 ---
 name: synergy-reviewer
-description: Evaluate synergy opportunities against ICAEW and PwC assurance frameworks. Use when reviewing cost or revenue synergy cases, challenging assumptions, or preparing for auditor review.
+description: Evaluate synergy opportunities against ICAEW and Big Four assurance frameworks. Use when reviewing cost or revenue synergy cases, challenging assumptions, or preparing for auditor review.
 ---
 
 # Synergy Reviewer
 
-Structured challenge and evaluation of synergy opportunities against ICAEW Tech 04/20 and PwC assurance frameworks.
+Structured challenge and evaluation of synergy opportunities against ICAEW Tech 04/20 and Big Four assurance frameworks.
 
 ## When to Use
 
 - Reviewing a cost or revenue synergy case
-- Preparing synergy documentation for PwC review
+- Preparing synergy documentation for Big Four review
 - Challenging assumptions on a synergy initiative
 - Assessing if a synergy is "assurable" or needs reclassification
 - Gap analysis before auditor submission
@@ -32,12 +32,12 @@ Ask the user:
 What synergy would you like me to review?
 
 Please provide:
-1. Synergy name and area (e.g., "CMB LC Front Office")
+1. Synergy name and area (e.g., "Business Unit Front Office")
 2. Gross synergy amount (USD m)
 3. Brief description of the synergy case
 4. Any supporting documentation or notes
 
-I'll evaluate it against ICAEW and PwC frameworks.
+I'll evaluate it against ICAEW and Big Four frameworks.
 ```
 
 ### Step 2: Apply the Four Attributes Test
@@ -78,10 +78,10 @@ Challenge prompts:
 
 #### Strong Transaction Attribution Example
 
-**On-Us Card Transactions:** Amber and Jade have >50% combined card market share in HK. Currently, Amber cards at Jade terminals pay interchange to Visa/Mastercard because card scheme rules require it between separate banking entities. Post-privatisation, these could be treated as "on-us" internal transfers, eliminating interchange fees.
+**On-Us Card Transactions:** Company A and Company B have significant combined card market share. Currently, Company A cards at Company B terminals pay interchange to Visa/Mastercard because card scheme rules require it between separate banking entities. Post-transaction, these could be treated as "on-us" internal transfers, eliminating interchange fees.
 
 - ✅ **Structural barrier**: Card scheme rules legally require interchange between separate banks
-- ✅ **Cannot be done pre-transaction**: Separate listing prevents internal treatment
+- ✅ **Cannot be done pre-transaction**: Separate ownership prevents internal treatment
 - ✅ **Quantifiable**: Transaction volume × interchange rate
 - ✅ **Low execution risk**: Contractual/system change, not behavioural
 
@@ -99,8 +99,8 @@ For **Cost Synergies**, verify:
 | Cost baseline documented | ⬜ | |
 | Headcount baseline with FTE detail | ⬜ | |
 | KPIs for capacity (workload per FTE) | ⬜ | |
-| Amber capacity to absorb Jade | ⬜ | |
-| Process mapping (Jade → Amber) | ⬜ | |
+| Acquirer capacity to absorb Target | ⬜ | |
+| Process mapping (Target → Acquirer) | ⬜ | |
 | Retained FTE sufficient for residual | ⬜ | |
 | Business owner validation | ⬜ | |
 | Market benchmarks referenced | ⬜ | |
@@ -117,7 +117,7 @@ For **Revenue Synergies**, verify:
 | Alternative view articulated | ⬜ | |
 | External benchmarks referenced | ⬜ | |
 | Business owner validation | ⬜ | |
-| **Data provider vs sign-off authority identified** | ⬜ | Distinguish functional leads who supply data from executives (CEO/CFO) who PwC will interview |
+| **Data provider vs sign-off authority identified** | ⬜ | Distinguish functional leads who supply data from executives (CEO/CFO) who the assurance team will interview |
 
 ### Step 5: Challenge Questions
 
@@ -130,16 +130,16 @@ Apply these probing questions based on synergy type:
 - "Are severance costs included in CTA at realistic levels?"
 
 **For Process Consolidation:**
-- "Are the Jade and Amber processes truly comparable?"
+- "Are the Target and Acquirer processes truly comparable?"
 - "What investment is needed to harmonise platforms/tools?"
 - "Is the timeline realistic given technology dependencies?"
 
 **For Revenue Synergies:**
 - "What is the counterfactual - why didn't this happen before?"
 - "How does the assumed penetration compare to comparable propositions?"
-- "Is there cannibalization of existing Jade or Amber products?"
+- "Is there cannibalization of existing Target or Acquirer products?"
 - "What happens if customer take-up is 50% of plan?"
-- "Who provides the data vs who has authority to sign off? PwC will interview executives (CEO/CFO), not data leads."
+- "Who provides the data vs who has authority to sign off? The assurance team will interview executives (CEO/CFO), not data leads."
 
 **For Delisting/Governance Savings:**
 - "Which specific obligations cease post-privatisation?"
@@ -148,7 +148,7 @@ Apply these probing questions based on synergy type:
 
 ### Step 6: Rate the Synergy
 
-Assign ratings per PwC framework:
+Assign ratings per Big Four framework:
 
 **Management Validation:**
 - ✅ Validated by business/functional owner
@@ -260,7 +260,7 @@ Watch for these common issues:
 
 When time-constrained, focus efforts on synergies with the strongest transaction attribution:
 
-**Prioritize (worth defending to PwC):**
+**Prioritize (worth defending to the auditor):**
 - Synergies with explicit CCT/structural barrier in source papers
 - Synergies where sponsor paper states "could only occur if we privatize" or similar
 - Synergies with legal/contractual barriers (e.g., card scheme rules)
@@ -274,9 +274,9 @@ When time-constrained, focus efforts on synergies with the strongest transaction
 
 ---
 
-## KPMG Review Standards
+## Big Four Review Standards
 
-Based on KPMG detailed synergy reviews, apply these specific checks that PwC will scrutinize.
+Based on Big Four detailed synergy reviews, apply these specific checks that the auditor will scrutinize.
 
 ### Source Documentation Drill-Down
 
@@ -375,7 +375,7 @@ For revenue synergies, verify each element:
 | CTA included | Costs quantified | ⬜ |
 | ROI calculation | Methodology clear | ⬜ |
 
-### Sample KPMG-Style Comments to Generate
+### Sample Big Four-Style Comments to Generate
 
 When reviewing, generate comments like:
 
@@ -440,19 +440,19 @@ Use the full template from Step 7.
 | [Name] | [X] | ✅/⬜ | 🟢🟡🔴 | H/M/L | [Next step] |
 ```
 
-## Integration with Falcon Vault
+## Integration with Project Vault
 
-When reviewing synergies for Project Falcon, reference:
-- `PwC Evidence Requirements by Initiative.md` - Area-specific checklists
-- `Cost Synergy Assessment Template.md` - Per-initiative documentation
-- `Revenue Synergy Assessment Template.md` - Revenue case structure
-- `PwC Interim Status Update - December 2025.md` - Current gap status
+When reviewing synergies for a project, reference project-specific files such as:
+- Evidence Requirements by Initiative - Area-specific checklists
+- Cost Synergy Assessment Template - Per-initiative documentation
+- Revenue Synergy Assessment Template - Revenue case structure
+- Interim Status Updates - Current gap status
 
 ## Example Usage
 
-**User:** "Review the CMB LC Front Office synergy of $15m"
+**User:** "Review the Business Unit Front Office synergy of $15m"
 
 **Response:**
-"I'll review the CMB LC Front Office synergy. Let me gather the context and apply the ICAEW/PwC framework..."
+"I'll review the Business Unit Front Office synergy. Let me gather the context and apply the ICAEW/Big Four framework..."
 
 [Runs through Steps 1-7, produces structured output]

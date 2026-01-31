@@ -382,13 +382,45 @@ views:
 
 ### Map View
 
-Requires latitude/longitude properties and the Maps community plugin.
+Requires the **Maps community plugin** to be installed and enabled.
 
 ```yaml
 views:
   - type: map
     name: "Locations"
-    # Map-specific settings for lat/lng properties
+    coordinates: coordinates       # Property containing [lat, lng] array
+    markerColor: formula.color     # Optional: property/formula for marker color
+    markerIcon: coffee             # Optional: Lucide icon name
+    defaultZoom: 10                # Optional: initial zoom level
+    order:
+      - file.name
+      - rating
+```
+
+**Map View Options:**
+
+| Option | Type | Description |
+|--------|------|-------------|
+| `coordinates` | string | Property name containing coordinates (array `[lat, lng]` or string `"lat, lng"`) |
+| `markerColor` | string | Property or formula returning color name (green, gold, red, gray, etc.) |
+| `markerIcon` | string | Lucide icon name for markers |
+| `defaultZoom` | number | Initial zoom level (higher = more zoomed in) |
+
+**Coordinates Format:**
+- Array: `coordinates: [-8.263, 115.354]`
+- String: `coordinates: "-8.263, 115.354"`
+
+**Example with dynamic marker colors:**
+```yaml
+formulas:
+  markerColor: 'if(rating >= 4, "green", if(rating >= 2, "gold", "red"))'
+
+views:
+  - type: map
+    name: "Rated Locations"
+    coordinates: coordinates
+    markerColor: formula.markerColor
+    markerIcon: star
 ```
 
 ## Default Summary Formulas
@@ -707,6 +739,43 @@ filters:
 
 ## Common Pitfalls
 
+### ❌ Cards View: `cover:` vs `image:`
+
+The key for specifying the image property in cards view is `image:`, **NOT** `cover:`.
+
+```yaml
+# ✅ CORRECT - use image: key
+views:
+  - type: cards
+    name: "Gallery"
+    image: feature
+    cardSize: 150
+
+# ❌ WRONG - cover: is not a valid key
+views:
+  - type: cards
+    name: "Gallery"
+    cover: feature
+```
+
+### ❌ Map View: `location:` vs `coordinates:`
+
+The key for specifying the coordinates property in map view is `coordinates:`, **NOT** `location:`.
+
+```yaml
+# ✅ CORRECT - use coordinates: key
+views:
+  - type: map
+    name: "Map"
+    coordinates: coordinates
+
+# ❌ WRONG - location: is not a valid key (map will show nothing)
+views:
+  - type: map
+    name: "Map"
+    location: coordinates
+```
+
 ### ❌ String vs Link Function
 
 **NEVER** use string `"[[Note]]"` for link property checks. **ALWAYS** use the `link()` function.
@@ -791,6 +860,40 @@ order:
   - file.name
   - note.author
   - note.genre
+```
+
+### ❌ Property Definition vs Actual Note Property
+
+Ensure `properties:` definitions match what your notes actually use. If notes have `image:` but you define `note.feature:`, the base won't find your images.
+
+```yaml
+# If your notes have: image: "[[photo.jpg]]"
+
+# ✅ CORRECT - matches note property name
+properties:
+  note.image:
+    type: image
+    displayName: Photo
+
+# ❌ WRONG - defines different property than notes use
+properties:
+  note.feature:
+    type: image
+    displayName: Photo
+```
+
+### ❌ Case Sensitivity
+
+Property names are case-sensitive. `Image` ≠ `image`.
+
+```yaml
+# If your notes have: image: "[[photo.jpg]]"
+
+# ✅ CORRECT
+image: image
+
+# ❌ WRONG - capital I won't match
+image: Image
 ```
 
 ## References

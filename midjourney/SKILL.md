@@ -57,9 +57,63 @@ Edit `mjgen.py` to customize:
 
 **Images not saving**: Check Attachments folder permissions
 
+**Markdown files not updating**: Obsidian caches files in memory. See "Updating Obsidian Files" below.
+
+## Updating Obsidian Files
+
+The script updates markdown files with `feature: Attachments/{name}.png`. However, **Obsidian will revert these changes if it's running**.
+
+### Required Workflow
+
+1. **Quit Obsidian before running `--all`**
+   ```bash
+   osascript -e 'quit app "Obsidian"'
+   rm -f "/path/to/vault/.obsidian/workspace.json"
+   ```
+
+2. **Run the generation**
+   ```bash
+   python3.11 ~/.claude/skills/midjourney/mjgen.py --all
+   ```
+
+3. **Reopen Obsidian** after generation completes
+
+### If Files Get Reverted
+
+If you ran with Obsidian open and changes were reverted:
+
+```bash
+# Quit Obsidian and clear cache
+osascript -e 'quit app "Obsidian"'
+rm -f "/path/to/vault/.obsidian/workspace.json"
+
+# Re-add feature properties
+python3 << 'EOF'
+from pathlib import Path
+attachments = Path("/path/to/vault/Attachments")
+people_dir = Path("/path/to/vault/References/People")
+
+for md in people_dir.glob("*.md"):
+    name = md.stem
+    if (attachments / f"{name}.png").exists():
+        content = md.read_text()
+        if f"feature: Attachments/{name}.png" not in content:
+            content = content.replace(
+                '  - "[[People]]"\n',
+                f'  - "[[People]]"\nfeature: Attachments/{name}.png\n'
+            )
+            md.write_text(content)
+EOF
+
+# Reopen Obsidian
+open -a Obsidian
+```
+
 ## Key Implementation Details
 
 - Uses Playwright for browser automation
 - Fixed 60s wait (image count unreliable due to lazy loading)
 - Screenshots element instead of downloading URL (CDN requires auth)
 - Dismisses suggestion dropdown before submitting (Escape key)
+- MJ generates 4 images per prompt; script takes the first one
+- People Base uses `image: feature` property for card thumbnails
