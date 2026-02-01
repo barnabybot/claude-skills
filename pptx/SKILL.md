@@ -87,6 +87,35 @@ Each template folder contains:
 
 **Read config.yaml first** to get the correct settings for that template.
 
+### KPMG Font Installation
+
+KPMG fonts must be installed for presentations to render correctly:
+
+```bash
+# Font files are synced via iCloud at:
+~/Library/Mobile Documents/com~apple~CloudDocs/claude-code/templates/kpmg/KPMG-2022/
+
+# Install to user fonts:
+cp ~/Library/Mobile\ Documents/com~apple~CloudDocs/claude-code/templates/kpmg/KPMG-2022/*.ttf ~/Library/Fonts/
+```
+
+**Required fonts**: KPMG-Bold.ttf, KPMG-Light.ttf, KPMG-Regular.ttf
+
+### KPMG Theme Installation for PowerPoint
+
+To use KPMG themes in PowerPoint itself (for manual editing after generation):
+
+```bash
+# Theme file location:
+~/Library/Mobile Documents/com~apple~CloudDocs/claude-code/templates/kpmg/KPMG-2022/KPMG\ Theme.thmx
+
+# Install to PowerPoint themes folder:
+cp "~/Library/Mobile Documents/com~apple~CloudDocs/claude-code/templates/kpmg/KPMG-2022/KPMG Theme.thmx" \
+   ~/Library/Group\ Containers/UBF8T346G9.Office/User\ Content/Themes/
+```
+
+**Note**: To remove DRAFT watermark from theme, edit the `slideMaster1.xml` inside the .thmx file.
+
 ### Reference Scripts
 Complete working scripts are available at:
 ```
@@ -113,7 +142,7 @@ Copy and adapt these scripts rather than writing from scratch.
 
 **Solution**: Match content type to visual pattern. Don't just use bullet lists for everything.
 
-**Pattern Catalog** (implemented in `Lakehouse_workspace/create_improved_presentation.py`):
+**Pattern Catalog** (documented in Obsidian Core vault: `2026-01-25 KPMG Presentation Visual Variety Patterns.md`):
 
 | Content Type | Pattern to Use | Function |
 |--------------|----------------|----------|
@@ -143,7 +172,15 @@ Copy and adapt these scripts rather than writing from scratch.
 
 4. **Embed images properly**: Use `slide.shapes.add_picture(path, x, y, width=Inches(N))` - don't leave as raw wikilinks or markdown.
 
-5. **Reference script**: See `/Users/barnabyrobson/Desktop/Lakehouse_workspace/create_improved_presentation.py` for complete implementation with all patterns.
+5. **Reference documentation**: See Obsidian Core vault `2026-01-25 KPMG Presentation Visual Variety Patterns.md` for documented learnings. The `kpmg_creative_toolkit.py` script in this skill contains the base patterns.
+
+### Vault Documentation Cross-References
+
+Detailed learnings from KPMG presentation projects are documented in the Obsidian Core vault:
+- `2026-01-25 KPMG Presentation Visual Variety Patterns.md` - Pattern catalog and technical learnings
+- `KPMG PowerPoint Workflow Guide.md` - Full workflow, color codes, typography specs, bugs to avoid
+
+Always check these vault notes for the latest learnings before starting a KPMG presentation project.
 
 ### Shape Transplant Workflow (RECOMMENDED)
 
