@@ -1,0 +1,130 @@
+{
+  "airline": "Cathay Pacific",
+  "aircraft": "Airbus A350-1000",
+  "aircraft_codes": ["A350-1000", "35K", "351"],
+  "cabin": "Business",
+  "product": "Aria Suite",
+  "configuration": "1-2-1",
+  "total_seats": 46,
+  "rows": {
+    "first_row": 11,
+    "last_row": 23
+  },
+  "layout": {
+    "columns": ["A", "C", "D", "G", "H", "K"],
+    "window": ["A", "K"],
+    "aisle": ["C", "H"],
+    "middle": ["D", "G"]
+  },
+  "seats": {
+    "11A": {
+      "row": 11,
+      "letter": "A",
+      "rating": 5,
+      "type": "window",
+      "position": "forward",
+      "features": ["extra_storage", "quiet", "bulkhead"],
+      "notes": "Best window seat - front of cabin, extra storage space, quietest location"
+    },
+    "11C": {
+      "row": 11,
+      "letter": "C",
+      "rating": 4,
+      "type": "aisle",
+      "position": "forward",
+      "features": ["quick_exit"],
+      "notes": "Front row aisle, good for quick deplaning"
+    },
+    "11D": {
+      "row": 11,
+      "letter": "D",
+      "rating": 4,
+      "type": "middle",
+      "position": "forward",
+      "features": ["couples_seat"],
+      "notes": "Center pair - good for traveling together"
+    },
+    "11G": {
+      "row": 11,
+      "letter": "G",
+      "rating": 4,
+      "type": "middle",
+      "position": "forward",
+      "features": ["couples_seat"],
+      "notes": "Center pair - good for traveling together"
+    },
+    "11H": {
+      "row": 11,
+      "letter": "H",
+      "rating": 4,
+      "type": "aisle",
+      "position": "forward",
+      "features": ["quick_exit"],
+      "notes": "Front row aisle, good for quick deplaning"
+    },
+    "11K": {
+      "row": 11,
+      "letter": "K",
+      "rating": 5,
+      "type": "window",
+      "position": "forward",
+      "features": ["extra_storage", "quiet", "bulkhead"],
+      "notes": "Best window seat - front of cabin, extra storage space, quietest location"
+    },
+    "18A": {
+      "row": 18,
+      "letter": "A",
+      "rating": 5,
+      "type": "window",
+      "position": "mini_cabin_front",
+      "features": ["extra_privacy", "quiet"],
+      "notes": "Mini-cabin front row - extra privacy and quiet"
+    },
+    "18K": {
+      "row": 18,
+      "letter": "K",
+      "rating": 5,
+      "type": "window",
+      "position": "mini_cabin_front",
+      "features": ["extra_privacy", "quiet"],
+      "notes": "Mini-cabin front row - extra privacy and quiet"
+    },
+    "23A": {
+      "row": 23,
+      "letter": "A",
+      "rating": 3,
+      "type": "window",
+      "position": "rear",
+      "issues": ["galley_proximity"],
+      "notes": "Last row - near galley, some noise during service"
+    },
+    "23K": {
+      "row": 23,
+      "letter": "K",
+      "rating": 3,
+      "type": "window",
+      "position": "rear",
+      "issues": ["galley_proximity"],
+      "notes": "Last row - near galley, some noise during service"
+    }
+  },
+  "general_notes": [
+    "All business class seats are Aria Suites with closing doors",
+    "Lie-flat beds with direct aisle access for every seat",
+    "Window seats (A/K) have more privacy with door closed",
+    "Middle seats (D/G) best for couples - doors can be lowered between them",
+    "Front rows (11, 18) are quietest and first served",
+    "Avoid last rows (22-23) if noise-sensitive - near galley",
+    "All seats have 24-inch 4K screens, wireless charging",
+    "Premium window seats: 11A, 11K, 18A, 18K"
+  ],
+  "routes_used": [
+    "HKG-LHR",
+    "HKG-JFK", 
+    "HKG-SFO",
+    "HKG-LAX",
+    "HKG-CDG"
+  ],
+  "updated": "2025-12-01",
+  "source": "SeatGuru + Cathay Pacific official"
+}

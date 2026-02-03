@@ -1,0 +1,25 @@
+{
+  "default_airline": "cathay",
+  "preferences": {
+    "seat_type": "window",
+    "min_rating": 4,
+    "avoid": ["lavatory", "galley", "limited_recline"]
+  },
+  "monitoring": {
+    "check_interval_hours": 4,
+    "notify_channel": "whatsapp"
+  },
+  "bookings": [
+    {
+      "pnr": "XXXXXX",
+      "lastname": "LASTNAME",
+      "airline": "cathay",
+      "flights": ["CX784", "CX872"],
+      "notes": "Feb 2026 trip"
+    }
+  ],
+  "seatguru": {
+    "cache_hours": 168,
+    "default_cabin": "business"
+  }
+}
