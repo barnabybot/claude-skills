@@ -1,0 +1,67 @@
+{
+  "version": "1.0",
+  "rules": [
+    {
+      "name": "VIP Senders",
+      "condition": {
+        "type": "sender_domain",
+        "values": ["company.com", "important-client.com"]
+      },
+      "actions": {
+        "priority": "high",
+        "label": "VIP"
+      }
+    },
+    {
+      "name": "Urgent Keywords",
+      "condition": {
+        "type": "subject_contains",
+        "values": ["URGENT", "ASAP", "immediately", "deadline today"]
+      },
+      "actions": {
+        "priority": "high",
+        "label": "Urgent",
+        "notify": true
+      }
+    },
+    {
+      "name": "Meeting Requests",
+      "condition": {
+        "type": "subject_contains",
+        "values": ["meeting", "calendar invite", "schedule a call"]
+      },
+      "actions": {
+        "priority": "medium",
+        "label": "Meetings",
+        "draft_response": "meeting_acknowledgment"
+      }
+    },
+    {
+      "name": "Newsletters",
+      "condition": {
+        "type": "sender_contains",
+        "values": ["newsletter", "noreply", "no-reply", "updates@"]
+      },
+      "actions": {
+        "priority": "low",
+        "label": "Newsletters",
+        "archive": true
+      }
+    },
+    {
+      "name": "Automated Reports",
+      "condition": {
+        "type": "subject_pattern",
+        "pattern": "^(Daily|Weekly|Monthly) (Report|Summary|Digest)"
+      },
+      "actions": {
+        "priority": "low",
+        "label": "Reports"
+      }
+    }
+  ],
+  "default_action": {
+    "priority": "medium",
+    "label": "Inbox"
+  }
+}

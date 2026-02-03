@@ -1,0 +1,64 @@
+{
+  "nodes": [
+    {
+      "id": "goal",
+      "type": "text",
+      "x": 0,
+      "y": 0,
+      "width": 250,
+      "height": 100,
+      "text": "# Project Goal\n\nLaunch MVP by Q2"
+    },
+    {
+      "id": "task1",
+      "type": "text",
+      "x": -200,
+      "y": 200,
+      "width": 200,
+      "height": 80,
+      "text": "## Backend\n- [ ] API design\n- [ ] Database schema"
+    },
+    {
+      "id": "task2",
+      "type": "text",
+      "x": 200,
+      "y": 200,
+      "width": 200,
+      "height": 80,
+      "text": "## Frontend\n- [ ] UI mockups\n- [ ] Component library"
+    },
+    {
+      "id": "note1",
+      "type": "file",
+      "x": 0,
+      "y": 400,
+      "width": 200,
+      "height": 50,
+      "file": "Projects/MVP/requirements.md"
+    }
+  ],
+  "edges": [
+    {
+      "id": "edge1",
+      "fromNode": "goal",
+      "toNode": "task1",
+      "fromSide": "bottom",
+      "toSide": "top"
+    },
+    {
+      "id": "edge2",
+      "fromNode": "goal",
+      "toNode": "task2",
+      "fromSide": "bottom",
+      "toSide": "top"
+    },
+    {
+      "id": "edge3",
+      "fromNode": "task1",
+      "toNode": "note1",
+      "fromSide": "bottom",
+      "toSide": "top",
+      "label": "depends on"
+    }
+  ]
+}

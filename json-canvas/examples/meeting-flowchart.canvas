@@ -1,0 +1,70 @@
+{
+  "nodes": [
+    {
+      "id": "start",
+      "type": "text",
+      "x": 0,
+      "y": 0,
+      "width": 150,
+      "height": 60,
+      "color": "1",
+      "text": "**Meeting Start**"
+    },
+    {
+      "id": "agenda",
+      "type": "text",
+      "x": 0,
+      "y": 120,
+      "width": 200,
+      "height": 80,
+      "text": "Review agenda\n- Status updates\n- Blockers\n- Action items"
+    },
+    {
+      "id": "decision",
+      "type": "text",
+      "x": 0,
+      "y": 260,
+      "width": 180,
+      "height": 60,
+      "color": "4",
+      "text": "**Decision needed?**"
+    },
+    {
+      "id": "yes",
+      "type": "text",
+      "x": -150,
+      "y": 380,
+      "width": 150,
+      "height": 60,
+      "color": "5",
+      "text": "Document decision\nAssign owner"
+    },
+    {
+      "id": "no",
+      "type": "text",
+      "x": 150,
+      "y": 380,
+      "width": 150,
+      "height": 60,
+      "text": "Continue discussion\nSchedule follow-up"
+    },
+    {
+      "id": "end",
+      "type": "text",
+      "x": 0,
+      "y": 500,
+      "width": 150,
+      "height": 60,
+      "color": "6",
+      "text": "**Meeting End**\nSend summary"
+    }
+  ],
+  "edges": [
+    {"id": "e1", "fromNode": "start", "toNode": "agenda", "fromSide": "bottom", "toSide": "top"},
+    {"id": "e2", "fromNode": "agenda", "toNode": "decision", "fromSide": "bottom", "toSide": "top"},
+    {"id": "e3", "fromNode": "decision", "toNode": "yes", "fromSide": "left", "toSide": "top", "label": "Yes"},
+    {"id": "e4", "fromNode": "decision", "toNode": "no", "fromSide": "right", "toSide": "top", "label": "No"},
+    {"id": "e5", "fromNode": "yes", "toNode": "end", "fromSide": "bottom", "toSide": "left"},
+    {"id": "e6", "fromNode": "no", "toNode": "end", "fromSide": "bottom", "toSide": "right"}
+  ]
+}
