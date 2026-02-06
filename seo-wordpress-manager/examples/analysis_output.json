@@ -1,0 +1,84 @@
+{
+  "site": "https://example-blog.com",
+  "analyzed_at": "2026-02-06T15:00:00Z",
+  "total_posts": 5,
+  "issues_found": 4,
+  "posts": [
+    {
+      "post_id": 101,
+      "post_title": "Getting Started with Python for Data Analysis",
+      "post_url": "https://example-blog.com/python-data-analysis/",
+      "category": "tutorials",
+      "seo_title": "",
+      "meta_desc": "",
+      "focus_keyphrase": "",
+      "issues": [
+        "missing_seo_title",
+        "missing_meta_desc",
+        "missing_focus_keyphrase"
+      ],
+      "content_excerpt": "Python has become the de facto language for data analysis. In this comprehensive guide, we'll cover pandas, numpy, and matplotlib..."
+    },
+    {
+      "post_id": 102,
+      "post_title": "10 VS Code Extensions Every Developer Needs",
+      "post_url": "https://example-blog.com/vscode-extensions/",
+      "category": "tools",
+      "seo_title": "10 VS Code Extensions Every Developer Needs in 2026 | Example Blog",
+      "meta_desc": "Discover the must-have Visual Studio Code extensions that will supercharge your development workflow and boost productivity.",
+      "focus_keyphrase": "VS Code extensions",
+      "issues": [],
+      "content_excerpt": "Visual Studio Code has revolutionized how developers write code. Here are the extensions I can't live without..."
+    },
+    {
+      "post_id": 103,
+      "post_title": "Understanding REST APIs: A Complete Guide for Beginners",
+      "post_url": "https://example-blog.com/rest-api-guide/",
+      "category": "tutorials",
+      "seo_title": "Understanding REST APIs: A Complete Guide for Beginners | Example Blog",
+      "meta_desc": "REST",
+      "focus_keyphrase": "",
+      "issues": [
+        "meta_desc_too_short",
+        "missing_focus_keyphrase"
+      ],
+      "content_excerpt": "REST APIs are the backbone of modern web applications. This guide explains the fundamentals of RESTful architecture..."
+    },
+    {
+      "post_id": 104,
+      "post_title": "Docker for Beginners",
+      "post_url": "https://example-blog.com/docker-beginners/",
+      "category": "devops",
+      "seo_title": "Docker for Beginners: A Comprehensive Introduction to Containerization and Container Orchestration | Example Blog Name That Is Way Too Long",
+      "meta_desc": "Learn Docker from scratch with this beginner-friendly guide covering containers, images, and deployment.",
+      "focus_keyphrase": "Docker tutorial",
+      "issues": [
+        "seo_title_too_long"
+      ],
+      "content_excerpt": "Docker has transformed how we build, ship, and run applications. In this tutorial, you'll learn the fundamentals..."
+    },
+    {
+      "post_id": 105,
+      "post_title": "Git Branching Strategies",
+      "post_url": "https://example-blog.com/git-branching/",
+      "category": "tutorials",
+      "seo_title": "",
+      "meta_desc": "Understanding Git branching strategies is essential for team collaboration. Learn about GitFlow, trunk-based development, and when to use each approach for your projects.",
+      "focus_keyphrase": "git branching",
+      "issues": [
+        "missing_seo_title",
+        "meta_desc_too_long"
+      ],
+      "content_excerpt": "Effective Git branching strategies can make or break team productivity. Let's explore the most popular approaches..."
+    }
+  ],
+  "summary": {
+    "missing_seo_title": 2,
+    "missing_meta_desc": 1,
+    "missing_focus_keyphrase": 2,
+    "seo_title_too_long": 1,
+    "meta_desc_too_short": 1,
+    "meta_desc_too_long": 1,
+    "no_issues": 1
+  }
+}
