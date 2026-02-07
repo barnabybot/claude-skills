@@ -1,0 +1,108 @@
+<!--
+  Custom Newsletter CTA Template
+  
+  A more styled version of the default newsletter template with
+  gradient background and social proof elements.
+  
+  Variables:
+    {{title}}       - Headline text
+    {{description}} - Body description
+    {{form_url}}    - Form submission endpoint
+    {{button_text}} - CTA button label (optional, defaults to "Subscribe")
+    {{subscriber_count}} - Social proof number (optional)
+-->
+
+<aside class="cta cta-newsletter-pro" data-cta-type="newsletter">
+  <div class="cta-inner">
+    <div class="cta-icon">
+      <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
+        <polyline points="22,6 12,13 2,6"/>
+      </svg>
+    </div>
+    
+    <h3 class="cta-title">{{title}}</h3>
+    <p class="cta-description">{{description}}</p>
+    
+    <form class="cta-form" action="{{form_url}}" method="post">
+      <div class="cta-input-group">
+        <input 
+          type="email" 
+          name="email"
+          placeholder="your@email.com" 
+          required 
+          autocomplete="email"
+        />
+        <button type="submit">{{button_text}}</button>
+      </div>
+    </form>
+    
+    <p class="cta-social-proof">
+      Join {{subscriber_count}} others • No spam, unsubscribe anytime
+    </p>
+  </div>
+</aside>
+
+<style>
+.cta-newsletter-pro {
+  margin: 2.5rem 0;
+  padding: 2rem;
+  border-radius: 12px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  text-align: center;
+}
+
+.cta-newsletter-pro .cta-icon {
+  margin-bottom: 1rem;
+  opacity: 0.9;
+}
+
+.cta-newsletter-pro .cta-title {
+  margin: 0 0 0.5rem;
+  font-size: 1.5rem;
+  font-weight: 700;
+}
+
+.cta-newsletter-pro .cta-description {
+  margin: 0 0 1.5rem;
+  opacity: 0.9;
+  font-size: 1.1rem;
+}
+
+.cta-newsletter-pro .cta-input-group {
+  display: flex;
+  gap: 0.5rem;
+  max-width: 400px;
+  margin: 0 auto;
+}
+
+.cta-newsletter-pro input[type="email"] {
+  flex: 1;
+  padding: 0.75rem 1rem;
+  border: none;
+  border-radius: 6px;
+  font-size: 1rem;
+}
+
+.cta-newsletter-pro button {
+  padding: 0.75rem 1.5rem;
+  background: white;
+  color: #764ba2;
+  border: none;
+  border-radius: 6px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: transform 0.2s;
+}
+
+.cta-newsletter-pro button:hover {
+  transform: scale(1.05);
+}
+
+.cta-newsletter-pro .cta-social-proof {
+  margin: 1rem 0 0;
+  font-size: 0.85rem;
+  opacity: 0.8;
+}
+</style>

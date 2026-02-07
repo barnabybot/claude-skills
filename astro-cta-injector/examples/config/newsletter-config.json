@@ -1,0 +1,32 @@
+{
+  "content_path": "./src/content/blog",
+  "file_patterns": ["*.md", "*.astro"],
+  "cta_type": "newsletter",
+  "template": "./templates/newsletter.html",
+  "placement": "after-paragraph-50%",
+  "keywords": [
+    "productivity",
+    "tip",
+    "guide",
+    "strategy",
+    "workflow",
+    "habit",
+    "learn",
+    "method",
+    "framework",
+    "improve"
+  ],
+  "min_score": 5.0,
+  "cta_data": {
+    "title": "Get Weekly Productivity Insights",
+    "description": "Join 10,000+ readers getting actionable tips every Tuesday.",
+    "button_text": "Subscribe Free",
+    "form_url": "/api/newsletter/subscribe"
+  },
+  "output": {
+    "state_file": "./state/newsletter_progress.json",
+    "backup_dir": "./backups",
+    "report_file": "./reports/newsletter_injection_report.md"
+  },
+  "dry_run": true
+}
