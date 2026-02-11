@@ -1,0 +1,85 @@
+{
+  "config": {
+    "cta_type": "newsletter",
+    "placement": "after-paragraph-50%",
+    "min_score": 5.0,
+    "timestamp": "2025-01-21T10:30:00Z"
+  },
+  "summary": {
+    "total_posts": 3,
+    "qualified_posts": 2,
+    "excluded_posts": 1,
+    "average_score": 6.8
+  },
+  "posts": [
+    {
+      "file_path": "./src/content/blog/productivity-tips.md",
+      "title": "10 Productivity Tips That Actually Work",
+      "word_count": 612,
+      "scores": {
+        "keyword_density": 4.2,
+        "content_length": 3.0,
+        "title_match": 1.0
+      },
+      "total_score": 8.2,
+      "qualified": true,
+      "placement": "after-paragraph-50%",
+      "target_paragraph": 4,
+      "total_paragraphs": 8,
+      "cta_data": {
+        "title": "Get Weekly Productivity Insights",
+        "description": "Join 10,000+ readers getting actionable tips every Tuesday.",
+        "button_text": "Subscribe Free",
+        "form_url": "/api/newsletter/subscribe"
+      },
+      "matched_keywords": [
+        "productivity",
+        "tip",
+        "workflow",
+        "habit",
+        "strategy"
+      ]
+    },
+    {
+      "file_path": "./src/content/blog/task-management.md",
+      "title": "The Complete Guide to Task Management Systems",
+      "word_count": 845,
+      "scores": {
+        "keyword_density": 3.8,
+        "content_length": 3.0,
+        "title_match": 0.5
+      },
+      "total_score": 7.3,
+      "qualified": true,
+      "placement": "after-paragraph-50%",
+      "target_paragraph": 6,
+      "total_paragraphs": 12,
+      "cta_data": {
+        "title": "Get Weekly Productivity Insights",
+        "description": "Join 10,000+ readers getting actionable tips every Tuesday.",
+        "button_text": "Subscribe Free",
+        "form_url": "/api/newsletter/subscribe"
+      },
+      "matched_keywords": [
+        "productivity",
+        "workflow",
+        "habit",
+        "framework"
+      ]
+    },
+    {
+      "file_path": "./src/content/blog/weekly-update.md",
+      "title": "Weekly Update: January 2025",
+      "word_count": 42,
+      "scores": {
+        "keyword_density": 0.0,
+        "content_length": 0.0,
+        "title_match": 0.0
+      },
+      "total_score": 0.0,
+      "qualified": false,
+      "exclusion_reason": "Score 0.0 below minimum threshold 5.0",
+      "matched_keywords": []
+    }
+  ]
+}

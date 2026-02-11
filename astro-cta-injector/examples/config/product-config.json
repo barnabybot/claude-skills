@@ -1,0 +1,34 @@
+{
+  "content_path": "./src/content/blog",
+  "file_patterns": ["*.md", "*.astro"],
+  "cta_type": "product",
+  "template": "./templates/product.html",
+  "placement": "before-conclusion",
+  "keywords": [
+    "task",
+    "todo",
+    "organize",
+    "planning",
+    "goal",
+    "gtd",
+    "getting things done",
+    "project",
+    "workflow",
+    "system"
+  ],
+  "min_score": 6.0,
+  "cta_data": {
+    "title": "Try TaskFlow Pro",
+    "description": "The task manager built for serious productivity.",
+    "button_text": "Start Free Trial",
+    "product_url": "/products/taskflow-pro",
+    "product_price": "$9/month",
+    "image_url": "/images/taskflow-hero.png"
+  },
+  "output": {
+    "state_file": "./state/product_progress.json",
+    "backup_dir": "./backups",
+    "report_file": "./reports/product_injection_report.md"
+  },
+  "dry_run": true
+}
