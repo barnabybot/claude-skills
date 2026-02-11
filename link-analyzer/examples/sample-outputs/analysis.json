@@ -1,0 +1,89 @@
+{
+  "metadata": {
+    "analyzed_at": "2026-02-05T15:00:00Z",
+    "total_pages": 6,
+    "total_links": 18,
+    "thresholds": {
+      "underlinked": 3,
+      "overlinked": 5,
+      "sink_min_inbound": 2,
+      "sink_max_outbound": 1
+    }
+  },
+  "summary": {
+    "orphan_pages": 1,
+    "underlinked_pages": 2,
+    "overlinked_pages": 1,
+    "link_sinks": 1
+  },
+  "orphan_pages": [
+    "/blog/hidden-gem/"
+  ],
+  "underlinked_pages": [
+    {
+      "url": "/blog/advanced-tips/",
+      "inbound": 2,
+      "inbound_from": ["/", "/blog/getting-started/"]
+    },
+    {
+      "url": "/blog/getting-started/",
+      "inbound": 2,
+      "inbound_from": ["/", "/resources/"]
+    }
+  ],
+  "overlinked_pages": [
+    {
+      "url": "/resources/",
+      "outbound": 6
+    }
+  ],
+  "link_sinks": [
+    {
+      "url": "/about/",
+      "inbound": 6,
+      "outbound": 0
+    }
+  ],
+  "top_pages_by_inbound": [
+    {"url": "/", "inbound": 6, "outbound": 7},
+    {"url": "/about/", "inbound": 6, "outbound": 0},
+    {"url": "/resources/", "inbound": 6, "outbound": 6},
+    {"url": "/blog/getting-started/", "inbound": 2, "outbound": 5},
+    {"url": "/blog/advanced-tips/", "inbound": 2, "outbound": 3},
+    {"url": "/blog/hidden-gem/", "inbound": 0, "outbound": 4}
+  ],
+  "link_graph": {
+    "/": ["/about/", "/resources/", "/blog/getting-started/", "/blog/advanced-tips/"],
+    "/about/": [],
+    "/resources/": ["/", "/about/", "/blog/getting-started/", "/blog/advanced-tips/"],
+    "/blog/getting-started/": ["/", "/about/", "/resources/", "/blog/advanced-tips/"],
+    "/blog/advanced-tips/": ["/", "/about/", "/resources/"],
+    "/blog/hidden-gem/": ["/", "/about/", "/resources/", "/blog/getting-started/"]
+  },
+  "page_metrics": {
+    "/": {
+      "url": "/",
+      "inbound": 6,
+      "outbound": 7,
+      "ratio": 0.86,
+      "inbound_from": ["/about/", "/resources/", "/blog/getting-started/", "/blog/advanced-tips/", "/blog/hidden-gem/"],
+      "outbound_to": ["/about/", "/resources/", "/blog/getting-started/", "/blog/advanced-tips/"]
+    },
+    "/about/": {
+      "url": "/about/",
+      "inbound": 6,
+      "outbound": 0,
+      "ratio": -1,
+      "inbound_from": ["/", "/resources/", "/blog/getting-started/", "/blog/advanced-tips/", "/blog/hidden-gem/"],
+      "outbound_to": []
+    },
+    "/blog/hidden-gem/": {
+      "url": "/blog/hidden-gem/",
+      "inbound": 0,
+      "outbound": 4,
+      "ratio": 0,
+      "inbound_from": [],
+      "outbound_to": ["/", "/about/", "/resources/", "/blog/getting-started/"]
+    }
+  }
+}
