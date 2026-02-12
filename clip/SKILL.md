@@ -79,6 +79,33 @@ Read content and assign from vault taxonomy. Common topics:
 - Extract show name, guest names, episode number
 - Set show as wikilink
 
+### 3b. Obsidian CLI (Preferred When Obsidian Running)
+
+When Obsidian 1.12+ is running, **prefer CLI commands over direct file editing** for property changes:
+
+```bash
+OBS="/Applications/Obsidian.app/Contents/MacOS/obsidian"
+
+# Remove [[Inbox]] from categories
+$OBS vault=Core property:remove name=categories file="Note Name"
+
+# Set correct categories
+$OBS vault=Core property:set name=categories value="[[Clippings]]" type=list file="Note Name"
+
+# Add topics
+$OBS vault=Core property:set name=topics value="[[AI]]" type=list file="Note Name"
+
+# Set author
+$OBS vault=Core property:set name=author value="[[Person Name]]" file="Note Name"
+
+# Set type
+$OBS vault=Core property:set name=type value="[[Articles]]" file="Note Name"
+```
+
+**Why CLI**: No need to read the file first (saves tokens). Properties are set atomically. Use direct file editing only for body content changes (backlinks) or when Obsidian isn't running.
+
+**Note**: `property:remove` removes the entire property. To replace categories, remove first then set the new value.
+
 ### 4. Add Backlinks (Kepano Method)
 
 After frontmatter is set, add wikilinks throughout the body:

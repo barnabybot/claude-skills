@@ -45,6 +45,22 @@ python3 scripts/query_tasks.py "<vault_path>" --filter <type> --format <format>
 - Inline due dates: `due: 2026-01-31` or `by 2026-01-31`
 - Priority markers: `!!`, `🔴` (high), `⚠️`, `🟡` (normal)
 
+## Obsidian CLI Alternative (Quick Counts)
+
+When Obsidian 1.12+ is running, use CLI for quick task counts without running the Python script:
+
+```bash
+OBS="/Applications/Obsidian.app/Contents/MacOS/obsidian"
+$OBS vault=Core tasks todo          # Count of open markdown checkboxes
+$OBS vault=Core tasks done          # Count of completed checkboxes
+$OBS vault=Core tasks total         # Total checkboxes
+```
+
+**Caveat**: CLI `tasks` only sees markdown checkboxes (`- [ ]` / `- [x]`). It does NOT see TaskNotes plugin tasks (frontmatter-based `status: open`). For full task querying including TaskNotes, always use the Python script.
+
+Use CLI for: quick "how many tasks do I have?" counts.
+Use Python script for: filtering by priority, due date, overdue detection, detailed output.
+
 ## Output Example
 
 ```

@@ -9,15 +9,36 @@ Build optimal Obsidian Base configurations by analyzing note content and frontma
 
 ## Workflow
 
+### 0. Property Census (CLI - Fast)
+
+Before reading any individual notes, get a vault-wide property overview using the Obsidian CLI (requires Obsidian 1.12+ running):
+
+```bash
+OBS="/Applications/Obsidian.app/Contents/MacOS/obsidian"
+
+# See all properties sorted by usage count
+$OBS vault=Core properties all sort=count counts
+
+# Query an existing Base to see what it already surfaces
+$OBS vault=Core base:query file="Templates/Bases/MyBase.base" format=json
+```
+
+This instantly shows which properties exist across the vault and how widely used each one is, **without reading a single file**. Use this to:
+- Identify which properties are common enough to be Base columns
+- Spot property naming inconsistencies (e.g., `author` vs `Author`)
+- Determine which properties have enough coverage to be useful filters
+
+Skip this step only if Obsidian isn't running — fall back to reading individual files.
+
 ### 1. Analyze Target Notes
 
-First, examine the notes that the Base will query:
+After the property census, read 3-5 representative notes to understand value patterns:
 
 ```
-1. Read 3-5 representative notes from the target folder
-2. Extract all frontmatter properties and their types
-3. Identify common properties across notes
-4. Note which properties have meaningful variance (good for filtering/grouping)
+1. Confirm properties from census exist in the target folder's notes
+2. Check property value types and formats (text, list, wikilink, date, number)
+3. Identify which properties have meaningful variance (good for filtering/grouping)
+4. Note any computed values worth adding as formulas
 ```
 
 ### 2. Determine Property Display
