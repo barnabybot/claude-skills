@@ -29,6 +29,20 @@ grep -rl '\[\[Inbox\]\]' "VAULT/Clippings/" --include="*.md"
 
 If a folder is given, process all `.md` files in that folder.
 
+### 1b. Check for Misfiled Content
+
+Before processing, detect files in the wrong location:
+
+- **Files in `Clippings/` root**: Should be in a subfolder. Determine type from content/URL and move using Obsidian CLI `move` with `path=` syntax.
+- **Personal content in Clippings/**: If content has no external source (user's own writing, session logs), recategorize to `[[Journals]]` or `[[Essays]]` and flag for move to vault root.
+- **X articles in Tweets/**: See step 2b below — long-form X articles should be in Articles/, not Tweets/.
+
+### 1c. Sanitize Frontmatter Keys
+
+Web clippers sometimes create malformed YAML keys. Before processing content, scan for and fix:
+- **Trailing whitespace in keys**: e.g., `"published "` → `published` (common web clipper artifact)
+- **Inconsistent type values**: `[[Tweet]]` (singular) → `[[Tweets]]` (plural, per vault standard)
+
 ### 2. Determine Clipping Type
 
 Detect type from file location or frontmatter:
@@ -41,6 +55,30 @@ Detect type from file location or frontmatter:
 | `Clippings/Podcasts/` | Podcast | `[[Podcast episodes]]` |
 | `Clippings/Voice Memos/` | Voice Memo | `[[Clippings]]` |
 | `Clippings/Youtube/` | YouTube | `[[Clippings]]` |
+
+### 2b. X Article Detection (IMPORTANT)
+
+X (formerly Twitter) has a native articles feature. Long-form X posts are articles, not tweets. **Always check content structure**, not just URL origin.
+
+**Classify as Article** (move to `Clippings/Articles/`, type `[[Articles]]`):
+- Structured long-form prose with headings (##), multiple sections/parts
+- Reads like a blog post or essay (continuous narrative)
+- Typically 200+ lines of content
+- Often has code examples, step-by-step guides, or structured arguments
+- May be cross-posted to a blog
+
+**Classify as Tweet** (stays in `Clippings/Tweets/`, type `[[Tweets]]`):
+- Short posts, even if the text is long (e.g., a single prompt template share)
+- Numbered thread format (`1/N`, `2/N`, etc. with `(View Tweet)` links)
+- Podcast clip excerpts or quote shares
+- Image-only posts with brief caption
+
+**Heuristics** (check in order):
+1. Does it have `## Part N:` or `## Step N:` section headings? → Article
+2. Is it numbered tweet format (`1/206`, `(View Tweet)`)? → Tweet thread
+3. Is body content > 200 lines of continuous prose? → Likely article
+4. Is it < 60 lines? → Likely tweet
+5. When ambiguous, read the content — if it reads like a blog post, it's an article
 
 ### 3. Update Frontmatter
 
@@ -87,22 +125,27 @@ When Obsidian 1.12+ is running, **prefer CLI commands over direct file editing**
 OBS="/Applications/Obsidian.app/Contents/MacOS/obsidian"
 
 # Remove [[Inbox]] from categories
-$OBS vault=Core property:remove name=categories file="Note Name"
+$OBS vault=Core property:remove name=categories path="Clippings/Tweets/Note Name.md"
 
 # Set correct categories
-$OBS vault=Core property:set name=categories value="[[Clippings]]" type=list file="Note Name"
+$OBS vault=Core property:set name=categories value="[[Clippings]]" type=list path="Clippings/Tweets/Note Name.md"
 
 # Add topics
-$OBS vault=Core property:set name=topics value="[[AI]]" type=list file="Note Name"
+$OBS vault=Core property:set name=topics value="[[AI]]" type=list path="Clippings/Tweets/Note Name.md"
 
 # Set author
-$OBS vault=Core property:set name=author value="[[Person Name]]" file="Note Name"
+$OBS vault=Core property:set name=author value="[[Person Name]]" path="Clippings/Tweets/Note Name.md"
 
 # Set type
-$OBS vault=Core property:set name=type value="[[Articles]]" file="Note Name"
+$OBS vault=Core property:set name=type value="[[Articles]]" path="Clippings/Tweets/Note Name.md"
+
+# Move file (updates all backlinks automatically)
+$OBS vault=Core move path="Clippings/Tweets/Note Name.md" to="Clippings/Articles/Note Name.md"
 ```
 
 **Why CLI**: No need to read the file first (saves tokens). Properties are set atomically. Use direct file editing only for body content changes (backlinks) or when Obsidian isn't running.
+
+**IMPORTANT**: Use `path=` (not `file=`) for files in subfolders. `file=` only works for vault-root files.
 
 **Note**: `property:remove` removes the entire property. To replace categories, remove first then set the new value.
 
@@ -181,7 +224,10 @@ Key scripts for reference (patterns, not to execute directly):
 Before marking complete:
 - [ ] No `[[Inbox]]` categories remain
 - [ ] All files have at least 1 topic
-- [ ] YAML is valid (no syntax errors)
+- [ ] YAML is valid (no syntax errors, no trailing whitespace in keys)
 - [ ] Wikilinks are quoted in YAML
+- [ ] Type values use plural form (`[[Tweets]]` not `[[Tweet]]`, `[[Articles]]` not `[[Article]]`)
+- [ ] X articles are in `Clippings/Articles/` with type `[[Articles]]`, not in Tweets/
+- [ ] No personal content miscategorized as `[[Clippings]]`
 - [ ] Backlinks added to body (first mentions only)
 - [ ] No links inside code blocks or URLs
