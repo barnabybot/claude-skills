@@ -1077,13 +1077,26 @@ The vault CLAUDE.md takes precedence over general Obsidian conventions.
 
 ## Vault Maintenance
 
-When reorganizing vaults (moving, archiving, or deleting files), maintain link integrity:
+When reorganizing vaults (moving, archiving, or deleting files), use the Obsidian CLI to preserve link integrity.
 
-### After Moving Files
+### Moving and Renaming Files
 
-1. **Find incoming links** - Search for `[[Moved File Name]]` across the vault
-2. **Update or remove** - Fix wikilinks in files that referenced the moved content
-3. **Check aliases** - If the file had aliases, search for those too
+**Always use the CLI `move` command** — it auto-updates all backlinks across the vault:
+```bash
+obsidian vault=Core move file="Old Name" to="New Folder/New Name"
+```
+
+**Never use `mv`** for vault files — it breaks wikilinks silently.
+
+If Obsidian is not running, use `mv` but flag that backlinks need manual repair afterward.
+
+### Editing Frontmatter
+
+Use `property:set` and `property:remove` to edit frontmatter without reading the file:
+```bash
+obsidian vault=Core property:set name=status value=done file="My Note"
+obsidian vault=Core property:remove name=categories file="My Note"
+```
 
 ### Archive vs Delete
 
@@ -1092,54 +1105,24 @@ When reorganizing vaults (moving, archiving, or deleting files), maintain link i
 - Preserves historical context and audit trail
 - Allows recovery if needed later
 
+### Finding Link Issues
+
+Use CLI commands for vault-wide link analysis:
+```bash
+obsidian vault=Core orphans total       # Notes with no incoming links
+obsidian vault=Core deadends total      # Notes with no outgoing links
+obsidian vault=Core unresolved total    # Broken wikilinks
+obsidian vault=Core backlinks file="X"  # What links to a specific note
 ```
-Vault/
-├── Active Files/
-└── Archive/
-    └── Superseded - 2024-01/
-        └── Old File.md
-```
-
-### Link Maintenance Patterns
-
-| Scenario | Action |
-|----------|--------|
-| File renamed | Update all `[[Old Name]]` → `[[New Name]]` |
-| File moved to Archive | Update links to point to new location, or replace with current equivalent |
-| File deleted | Remove or replace broken links |
-| File superseded | Update links to point to replacement file |
-
-### Finding Stale Links
-
-After reorganization, search for:
-- Links to archived files that should point elsewhere
-- Orphan links (files with no incoming links that may be obsolete)
-- Related Documents sections that reference old structure
 
 ### Bulk Renumbering Pattern
 
 When files have numeric IDs (e.g., `Bucket-08`, `SYN-05`) and need renumbering:
 
-1. **Rename files** - Update filename to new number
-2. **Update frontmatter** - Change `bucket_id`, `synergy_id`, or similar property
-3. **Update internal references** - Change heading numbers, table references within the file
-4. **Update cross-references** - Search vault for `[[Old Name]]` and update to `[[New Name]]`
-5. **Update CLAUDE.md** - If vault has structure tables, update bucket/synergy listings
-
-**Workflow:**
-```bash
-# 1. Rename files (bash)
-mv "Bucket-08 - Old Name.md" "Bucket-10 - Old Name.md"
-
-# 2-3. Edit file content (use Edit tool)
-# - bucket_id: "Bucket-10"
-# - # Bucket 10: Title
-
-# 4. Search for cross-references
-# Use Grep to find [[Bucket-08 or "Bucket 8" references
-
-# 5. Update vault CLAUDE.md structure tables
-```
+1. **Rename files** via CLI — `obsidian vault=Core move file="Bucket-08 - Old Name" to="Bucket-10 - Old Name"` (updates all backlinks)
+2. **Update frontmatter** — `obsidian vault=Core property:set name=bucket_id value="Bucket-10" file="Bucket-10 - Old Name"`
+3. **Update internal references** — Edit heading numbers, table references within the file (use Edit tool)
+4. **Update CLAUDE.md** — If vault has structure tables, update bucket/synergy listings
 
 **Common patterns requiring updates:**
 - Frontmatter ID properties (`bucket_id`, `synergy_id`)
