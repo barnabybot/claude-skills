@@ -232,7 +232,29 @@ Check every `<img>` tag in `content.rendered`:
 
 If any image fails these checks, the WP media entry is broken — re-upload a resized version.
 
+**Check rendered page for dangerous scripts:**
+
+After publishing, fetch the live page HTML (with mobile User-Agent) and check for scripts that crash iOS:
+
+```bash
+curl -s '<post_url>' -H 'User-Agent: Mozilla/5.0 (iPhone; CPU iPhone OS 18_0 like Mac OS X)' | grep -o 'speculationrules.*' | head -5
+```
+
+| Script | Safe? | Why |
+|--------|-------|-----|
+| `<script type="speculationrules">` with `"prefetch"` + `"conservative"` | Yes | WP 6.9+ core feature — only downloads HTML, doesn't render pages |
+| `<script type="speculationrules">` with `"prerender"` | **NO** | Renders full page in hidden tab — doubles memory, crashes iOS. Speculative Loading plugin must stay OFF (see Known Limitations) |
+| `plvtInitViewTransitions` or `view-transition` meta | Caution | View Transitions plugin intercepts navigation with CSS animations — test on mobile before enabling |
+
 **Cache:** Post updates auto-purge LiteSpeed page cache (the page returns `x-litespeed-cache: miss` after update). No manual purge needed. Verify with `curl -sI <url> | grep x-litespeed`. **Note:** This only purges the HTML page cache, not the CDN cache for individual image files (see Known Limitations).
+
+**LiteSpeed cache staleness after plugin changes:** Deactivating a WordPress plugin does NOT purge the LiteSpeed page cache. All previously-cached pages will continue serving the old HTML (including scripts from the now-deactivated plugin) until the cache expires or is manually purged. After any plugin activation/deactivation, trigger a full cache purge via Code Snippets:
+
+```php
+do_action('litespeed_purge_all');
+```
+
+Then verify with `curl -sI <url> | grep x-litespeed-cache` — should show `miss` on first request.
 
 ### 9. Present with Rationale
 - Show recommendations in table format
@@ -311,6 +333,8 @@ Claude: [Analyzes topic and search intent]
 7. **Post-publish image verification** - Every `<img>` must have lazy loading, dimensions, and srcset
 8. **AVIF MIME type verification** - After upload, verify CDN serves `.avif` as `image/avif` not `text/plain`
 9. **Aspect ratio awareness** - Flag images with aspect ratio >1:3 that produce oversized WP variants
+10. **Speculation rules safety** - Verify rendered pages don't contain `prerender` speculation rules (Speculative Loading plugin must stay OFF)
+11. **Cache purge after plugin changes** - LiteSpeed serves stale HTML after plugin deactivation; always purge and verify `x-litespeed-cache: miss`
 
 ## Known Limitations
 
@@ -331,6 +355,23 @@ Hostinger's CDN (`hcdn`) caches static assets (images, CSS, JS) with `max-age=31
 - **New filenames:** Re-upload the image with a different filename → new URL → CDN cache miss → correct MIME type from origin
 - **Manual purge:** User must log into Hostinger panel (hpanel.hostinger.com) to purge CDN cache
 - **Prevention:** Ensure `.htaccess` has `AddType image/avif .avif` BEFORE uploading any images
+
+### Speculative Loading Plugin (MUST STAY OFF)
+
+The **Speculative Loading** plugin (`speculation-rules/load.php`) adds `prerender` speculation rules that tell browsers to fully render linked pages in hidden tabs before the user clicks. On iOS Safari and Chrome, this **doubles decoded image memory** (current page + prerendered page), exceeding the ~100-200 MB per-tab limit and crashing the browser.
+
+**WordPress 6.9+ has speculation rules built into core** — these use `prefetch` with `conservative` eagerness (only downloads HTML, doesn't render pages or load images). Core rules are safe and should not be confused with the plugin's `prerender` rules.
+
+| Source | Mode | Eagerness | Safe on iOS? |
+|--------|------|-----------|-------------|
+| WordPress 6.9+ core | `prefetch` | `conservative` | Yes — HTML download only |
+| Speculative Loading plugin | `prerender` | `moderate`/`eager` | **No — crashes mobile browsers** |
+
+**Do not re-enable the Speculative Loading plugin.** If it was activated accidentally, deactivate it and purge the LiteSpeed cache (plugin deactivation alone doesn't remove cached HTML containing the old scripts — see LiteSpeed cache staleness note in Step 8).
+
+### View Transitions Plugin (Test Before Enabling)
+
+The **View Transitions** plugin (`view-transitions/view-transitions.php`) intercepts page navigation with CSS animations. It has not been independently confirmed to cause crashes, but it modifies the navigation lifecycle in ways that may interact poorly with iOS memory management. Test on a physical iOS device before enabling.
 
 ### .htaccess Modification via Code Snippets
 
