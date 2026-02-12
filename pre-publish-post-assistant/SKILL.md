@@ -148,9 +148,10 @@ Before publishing, check every image referenced in the markdown:
 
 | Check | Threshold | Action if exceeded |
 |-------|-----------|-------------------|
-| Pixel dimensions | >5000px on any side | Resize with `sips --resampleWidth 2560` (or long edge) |
+| Pixel dimensions | >1600px wide | Resize with `sips --resampleWidth 1600` — prevents WP generating medium_large variants taller than ~3000px for portrait images |
 | File size | >2MB | Resize and/or compress (JPEG quality 75-85) |
 | Total pixels | >100 million | Resize — this WILL crash phones and may crash WP image processor |
+| Aspect ratio | >1:3 (portrait) | Flag and warn — extreme ratios produce very tall WP variants (e.g., 768x2808) that stress mobile decoders. Consider splitting into multiple images. |
 | Format | Raw PNG for photos | Convert to JPEG before upload (PNG fine for diagrams <500KB) |
 
 **After uploading to WP media library**, verify the response:
@@ -160,8 +161,24 @@ Before publishing, check every image referenced in the markdown:
 
 **Resize command (macOS):**
 ```bash
-sips --resampleWidth 2560 input.png --out /tmp/resized.jpg --setProperty format jpeg --setProperty formatOptions 80
+sips --resampleWidth 1600 input.png --out /tmp/resized.jpg --setProperty format jpeg --setProperty formatOptions 80
 ```
+
+**After uploading, verify AVIF MIME type on CDN (CRITICAL):**
+
+WordPress/LiteSpeed auto-converts uploads to `.avif`. Hostinger's server must have `AddType image/avif .avif` in `.htaccess` or avif files are served as `text/plain`, which **crashes mobile browsers** (iOS Safari + Chrome both affected).
+
+```bash
+# Check MIME type via CDN
+curl -sI "https://barnabyrobson.org/wp-content/uploads/2026/02/image.avif" | grep content-type
+# Expected: content-type: image/avif
+# Bad: content-type: text/plain → CDN cached wrong type
+```
+
+If wrong MIME type:
+1. Verify `.htaccess` has `AddType image/avif .avif` (add via Code Snippets if missing — see Known Limitations)
+2. CDN (`hcdn`) caches stale MIME types for up to 1 year with no PURGE API
+3. **Only fix for stale CDN cache:** re-upload images with new filenames to create new URLs that bypass the CDN cache
 
 ### 6. Check for Existing Post
 
@@ -211,10 +228,11 @@ Check every `<img>` tag in `content.rendered`:
 | `width` + `height` | Yes | Prevents layout shift; WP only adds lazy when these exist |
 | `srcset` | Yes | Responsive delivery — mobile gets small image, desktop gets large |
 | File format | Should be `.avif` or `.webp` | LiteSpeed/WP auto-converts; raw PNG/JPG >500KB is a red flag |
+| AVIF MIME type | `content-type: image/avif` | If served as `text/plain`, mobile browsers crash — see Step 5 AVIF section |
 
 If any image fails these checks, the WP media entry is broken — re-upload a resized version.
 
-**Cache:** Post updates auto-purge LiteSpeed cache (the page returns `x-litespeed-cache: miss` after update). No manual purge needed. Verify with `curl -sI <url> | grep x-litespeed`.
+**Cache:** Post updates auto-purge LiteSpeed page cache (the page returns `x-litespeed-cache: miss` after update). No manual purge needed. Verify with `curl -sI <url> | grep x-litespeed`. **Note:** This only purges the HTML page cache, not the CDN cache for individual image files (see Known Limitations).
 
 ### 9. Present with Rationale
 - Show recommendations in table format
@@ -291,6 +309,8 @@ Claude: [Analyzes topic and search intent]
 5. **Transparent reasoning** - Every suggestion includes rationale
 6. **Image validation before publish** - Never upload images >5000px or >2MB without resizing first
 7. **Post-publish image verification** - Every `<img>` must have lazy loading, dimensions, and srcset
+8. **AVIF MIME type verification** - After upload, verify CDN serves `.avif` as `image/avif` not `text/plain`
+9. **Aspect ratio awareness** - Flag images with aspect ratio >1:3 that produce oversized WP variants
 
 ## Known Limitations
 
@@ -300,3 +320,38 @@ Yoast meta fields (`_yoast_wpseo_metadesc`, `_yoast_wpseo_focuskw`) are **not ex
 - Manual update via wp-admin
 
 The `og_description` in `yoast_head_json` is read-only in the REST API response. If the existing Yoast metadata is acceptable, leave it rather than attempting to update.
+
+### Hostinger CDN Cache (hcdn)
+
+Hostinger's CDN (`hcdn`) caches static assets (images, CSS, JS) with `max-age=31557600` (1 year). There is **no PURGE API** and no REST endpoint for cache invalidation.
+
+**Impact:** If an image is first served with a wrong MIME type (e.g., `text/plain` for `.avif`), the CDN caches that wrong type for up to a year. Subsequent requests to the same URL get the stale cached response even after the origin server is fixed.
+
+**Workarounds:**
+- **New filenames:** Re-upload the image with a different filename → new URL → CDN cache miss → correct MIME type from origin
+- **Manual purge:** User must log into Hostinger panel (hpanel.hostinger.com) to purge CDN cache
+- **Prevention:** Ensure `.htaccess` has `AddType image/avif .avif` BEFORE uploading any images
+
+### .htaccess Modification via Code Snippets
+
+Server config changes (like adding MIME types) can be made remotely using the Code Snippets REST API:
+
+```php
+// Snippet scope: global, hook: init
+function fix_avif_mime_type_htaccess() {
+    $htaccess = ABSPATH . '.htaccess';
+    if (!file_exists($htaccess) || !is_writable($htaccess)) return;
+    $content = file_get_contents($htaccess);
+    if (strpos($content, 'AVIF MIME Type') !== false) return;
+    if (!function_exists('insert_with_markers')) {
+        require_once ABSPATH . 'wp-admin/includes/misc.php';
+    }
+    insert_with_markers($htaccess, 'AVIF MIME Type', array(
+        'AddType image/avif .avif',
+        'AddType image/avif-sequence .avifs',
+    ));
+}
+add_action('init', 'fix_avif_mime_type_htaccess');
+```
+
+**Important:** `insert_with_markers()` lives in `wp-admin/includes/misc.php` — you must `require_once` it when using from `init` hook (it's only auto-loaded on admin pages). Deactivate the snippet after the `.htaccess` change is confirmed (it's persistent).
