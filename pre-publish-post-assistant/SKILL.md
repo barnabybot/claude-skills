@@ -1,17 +1,20 @@
 ---
 name: pre-publish-post-assistant
-description: Pre-publish assistant for new blog posts. Use when the user wants to classify a new post with categories and tags, generate SEO metadata (title, description, focus keyphrase), or get intelligent suggestions with rationale. Works with draft content (file path, URL, or text) and suggests from existing taxonomy to maintain balanced distribution.
+description: Pre-publish assistant for new blog posts. Use when the user wants to classify a new post with categories and tags, generate SEO metadata (title, description, focus keyphrase), or get intelligent suggestions with rationale. Works with draft content (file path, URL, or text) and suggests from existing taxonomy to maintain balanced distribution. Also covers the full publish-to-WordPress workflow including image validation, markdown-to-HTML conversion, and post-publish verification.
 ---
 
 # Pre-publish Post Assistant Skill
 
 ## Purpose
 
-This skill helps prepare blog posts for publication by providing intelligent suggestions for:
+This skill covers the full lifecycle of publishing a blog post:
 
 1. **Categories** - From existing site categories, with distribution awareness
 2. **Tags** - From existing tags, avoiding tag pollution
 3. **SEO Metadata** - Title, meta description, and focus keyphrase
+4. **Image Validation** - Check all images before upload to prevent mobile crashes
+5. **Publishing** - Markdown-to-HTML conversion, WP REST API update, media handling
+6. **Post-Publish Validation** - Verify rendered HTML for responsive images, lazy loading
 
 All suggestions include rationale explaining the reasoning.
 
@@ -19,6 +22,7 @@ All suggestions include rationale explaining the reasoning.
 
 - User says "classify this post" or "suggest categories/tags"
 - User asks to "prepare this post for publishing"
+- User says "publish to my website" or "push this to WordPress"
 - User wants "SEO suggestions" for a draft
 - User provides a draft post and asks for taxonomy suggestions
 - User mentions "new blog post" and needs categorization help
@@ -122,8 +126,8 @@ For balanced suggestions, the skill needs post counts per category/tag:
 - Determine content type (how-to, opinion, review, etc.)
 
 ### 2. Load Taxonomy
-- Fetch existing categories with post counts
-- Fetch existing tags with post counts
+- Fetch existing categories with post counts via REST API: `GET /wp-json/wp/v2/categories?per_page=100`
+- Fetch existing tags with post counts: `GET /wp-json/wp/v2/tags?per_page=100&orderby=count&order=desc`
 - Identify distribution patterns
 
 ### 3. Match & Score
@@ -136,7 +140,83 @@ For balanced suggestions, the skill needs post counts per category/tag:
 - Write compelling meta description
 - Suggest focus keyphrase
 
-### 5. Present with Rationale
+### 5. Validate Images (CRITICAL)
+
+**Why:** WordPress silently fails to process oversized images — no error, just missing thumbnails. This results in raw multi-MB images served without `lazy` loading, `srcset`, or `width`/`height`, which crashes mobile browsers.
+
+Before publishing, check every image referenced in the markdown:
+
+| Check | Threshold | Action if exceeded |
+|-------|-----------|-------------------|
+| Pixel dimensions | >5000px on any side | Resize with `sips --resampleWidth 2560` (or long edge) |
+| File size | >2MB | Resize and/or compress (JPEG quality 75-85) |
+| Total pixels | >100 million | Resize — this WILL crash phones and may crash WP image processor |
+| Format | Raw PNG for photos | Convert to JPEG before upload (PNG fine for diagrams <500KB) |
+
+**After uploading to WP media library**, verify the response:
+- `media_details.width` and `media_details.height` must be present (not null)
+- `media_details.sizes` must contain generated thumbnails (medium, large, etc.)
+- If sizes are empty, WP failed to process the image — **do not use it**. Resize smaller and re-upload.
+
+**Resize command (macOS):**
+```bash
+sips --resampleWidth 2560 input.png --out /tmp/resized.jpg --setProperty format jpeg --setProperty formatOptions 80
+```
+
+### 6. Check for Existing Post
+
+Before creating a new WP post, always search first:
+```
+GET /wp-json/wp/v2/posts?search=<title keywords>&per_page=5
+```
+If an existing post matches:
+- Update it (`POST /wp-json/wp/v2/posts/{id}`) rather than creating a duplicate
+- Preserve the existing featured media, categories, and tags unless they need changing
+- Check existing Yoast SEO metadata before overwriting
+
+### 7. Publish to WordPress
+
+**Markdown to WordPress HTML conversion:**
+- Strip YAML frontmatter and H1 title (WP has its own title field)
+- Convert headings to `<!-- wp:heading -->` blocks
+- Convert paragraphs to `<!-- wp:paragraph -->` blocks
+- Convert lists to `<!-- wp:list -->` blocks with `<!-- wp:list-item -->` children
+- Convert inline markdown (bold, italic, links, code) to HTML
+- Convert `---` to `<!-- wp:separator -->` blocks
+- For images: use `<!-- wp:image {"id":MEDIA_ID,"sizeSlug":"large"} -->` blocks
+
+**REST API update:**
+```bash
+curl -X POST -u "$USER:$APP_PASSWORD" \
+  -H "Content-Type: application/json" \
+  -d '{"content":"...","status":"publish"}' \
+  "https://barnabyrobson.org/wp-json/wp/v2/posts/{id}"
+```
+
+**Homepage visibility:** Posts must include category ID 13 (Essays) to appear on the homepage Query Loop.
+
+### 8. Post-Publish Validation
+
+After updating the post, fetch the rendered content and verify:
+
+```
+GET /wp-json/wp/v2/posts/{id}
+```
+
+Check every `<img>` tag in `content.rendered`:
+
+| Attribute | Required | Why |
+|-----------|----------|-----|
+| `loading="lazy"` | Yes | Prevents loading off-screen images on page load |
+| `width` + `height` | Yes | Prevents layout shift; WP only adds lazy when these exist |
+| `srcset` | Yes | Responsive delivery — mobile gets small image, desktop gets large |
+| File format | Should be `.avif` or `.webp` | LiteSpeed/WP auto-converts; raw PNG/JPG >500KB is a red flag |
+
+If any image fails these checks, the WP media entry is broken — re-upload a resized version.
+
+**Cache:** Post updates auto-purge LiteSpeed cache (the page returns `x-litespeed-cache: miss` after update). No manual purge needed. Verify with `curl -sI <url> | grep x-litespeed`.
+
+### 9. Present with Rationale
 - Show recommendations in table format
 - Explain reasoning for each suggestion
 - Highlight any concerns or alternatives
@@ -209,3 +289,14 @@ Claude: [Analyzes topic and search intent]
 3. **SEO compliance** - Enforces character limits and keyword placement
 4. **Existing taxonomy** - Always checks against actual site data
 5. **Transparent reasoning** - Every suggestion includes rationale
+6. **Image validation before publish** - Never upload images >5000px or >2MB without resizing first
+7. **Post-publish image verification** - Every `<img>` must have lazy loading, dimensions, and srcset
+
+## Known Limitations
+
+### Yoast SEO Meta Updates
+Yoast meta fields (`_yoast_wpseo_metadesc`, `_yoast_wpseo_focuskw`) are **not exposed** via the WP REST API `meta` field or the WPGraphQL `UpdatePostInput` type. Updating Yoast SEO requires either:
+- A custom GraphQL mutation registered in `functions.php` (see seo-wordpress-manager skill)
+- Manual update via wp-admin
+
+The `og_description` in `yoast_head_json` is read-only in the REST API response. If the existing Yoast metadata is acceptable, leave it rather than attempting to update.
