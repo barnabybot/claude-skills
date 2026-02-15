@@ -80,6 +80,22 @@ Every note must have:
 | `[[Inbox]]` still present | Remove after proper category assigned |
 | Properties with bare text instead of wikilinks | Wrap in `"[[...]]"` |
 
+### YAML Syntax Repair
+
+Beyond content-level fixes, watch for these structural YAML issues (often from batch imports or automation bugs):
+
+| Problem | Example | Fix |
+|---------|---------|-----|
+| Scalar + dangling list item | `author: "[[Unknown]]"\n  - "[[Real Author]]"` | → `author: "[[Real Author]]"` (drop Unknown, keep real) |
+| Root-level dangling list item | `author: "[[X]]"\n- '[[Y]]'` | Same — broken YAML, merge into scalar or proper list |
+| Single-item list for scalar field | `genre:\n  - "[[Fiction]]"` | → `genre: "[[Fiction]]"` (for author/source/type/genre/person) |
+| Unquoted wikilinks in scalars | `author: [[Name]]` | → `author: "[[Name]]"` |
+| Unquoted wikilinks in lists | `  - [[Topic]]` | → `  - "[[Topic]]"` |
+| Single-quoted wikilinks | `author: '[[Name]]'` | → `author: "[[Name]]"` (vault standard is double quotes) |
+| Duplicate frontmatter blocks | Two `---..---` sections | Keep first block (usually has more data), remove second |
+
+**When to run syntax repair**: After batch imports, after discovering automation scripts produce malformed YAML, or when user reports "broken YAML". Use a Python script for bulk fixes (close Obsidian first per vault editing rules). Always spot-check 3-5 files after repair.
+
 ## Workflow: Single File / Folder
 
 ### Step 1: Read and Analyze
