@@ -17,6 +17,7 @@ Process Obsidian web clippings in the Core vault. Categorize content, normalize 
 - `/clip <file-path>` - Process a single file
 - `/clip <folder>` - Process a folder (e.g., `/clip Clippings/Articles`)
 - `/clip all` - Process everything in all Clippings/ subfolders
+- `/clip fix-formatting` - Run only step 3c (formatting cleanup) on all articles in `Clippings/Articles/`. Skips inbox processing, frontmatter, and backlinks. Use for retroactive cleanup of already-processed articles.
 
 ## Workflow
 
@@ -149,6 +150,134 @@ $OBS vault=Core move path="Clippings/Tweets/Note Name.md" to="Clippings/Articles
 
 **Note**: `property:remove` removes the entire property. To replace categories, remove first then set the new value.
 
+**Escaping `$` in filenames**: Bash interprets `$` as a variable (e.g., `$800` becomes empty). For files with `$` in the name, use python `subprocess.run()` or ensure the entire path is in single quotes. The Read/Edit tools handle `$` in paths correctly — this only affects Bash/CLI commands.
+
+**CLI double-quoting**: `property:set` sometimes wraps values as `'"[[Articles]]"'` (extra quote layer). Always verify with a read after setting properties via CLI. If double-quoted, re-run without the outer quotes or use direct file Edit.
+
+### 3c. Clean Web Clipper Body Formatting
+
+Web clippers (especially from X/Twitter articles and Substack) produce broken markdown. Fix these **before** adding backlinks:
+
+#### Empty Headings
+Clipper creates `## ` with heading text on the next line:
+```
+##
+
+What you actually need before you start
+```
+→ Merge into one heading, collapse surrounding blank lines:
+```
+## What you actually need before you start
+```
+Also detect doubled empty headings (section break artifact):
+```
+##
+
+The actual setup
+
+##
+```
+→ Single heading: `## The actual setup`
+
+#### Multi-line Image Links
+Clipper wraps images in clickable links but splits the markdown:
+```
+[
+
+![Image](https://pbs.twimg.com/media/xxx.jpg)
+
+
+
+
+](https://x.com/.../media/...)
+```
+→ Collapse to a clean image embed. Strip the outer link wrapper:
+```
+![Image](https://pbs.twimg.com/media/xxx.jpg)
+```
+
+#### Split Inline Links
+Clipper puts links on their own line, breaking mid-sentence:
+```
+lets your agent search the web. Sign up at
+
+[brave.com/search/api](https://brave.com/search/api)
+
+. Takes two minutes.
+```
+→ Join inline with surrounding text:
+```
+lets your agent search the web. Sign up at [brave.com/search/api](https://brave.com/search/api). Takes two minutes.
+```
+Same pattern with `[@handle](url)` links:
+```
+search for
+
+[@BotFather](https://x.com/@BotFather)
+
+, send a message
+```
+→ `search for [@BotFather](https://x.com/@BotFather), send a message`
+
+#### Fake Filename Links
+Clippers turn `.md` and `.sh` filenames into links to TLD domains:
+```
+[CLAUDE.md](https://claude.md/)
+[SOUL.md](https://soul.md/)
+[skills.sh](https://skills.sh/)
+```
+→ Convert to inline code (these are filenames, not web links):
+```
+`CLAUDE.md`
+`SOUL.md`
+`skills.sh`
+```
+**Detection**: Link text ends in `.md` or `.sh`, URL is `https://<same-name>/` (TLD domain, not a real page).
+
+#### Split Italics / Bold
+Clipper isolates emphasized words on their own line:
+```
+the work becomes
+
+*increasingly*
+
+important
+```
+→ `the work becomes *increasingly* important`
+
+#### Split Footnote References
+Clipper breaks `[N]` footnote markers across lines:
+```
+[
+
+1
+
+]
+```
+→ `[1]`
+
+#### Twitter UI Chrome
+X article clippings sometimes include page furniture at the top (e.g., "View keyboard shortcuts", profile badges, follower counts). Remove these — they're not article content.
+
+#### Redundant Code Block Language Labels
+Clipper renders code tab labels as bare words before fenced blocks:
+```
+bash
+​```bash
+npm install -g openclaw
+​```
+```
+→ Remove the bare `bash` / `json` / `python` line before the fenced block (the language is already specified in the fence).
+
+#### Excessive Blank Lines
+X article clippings often have 3+ consecutive blank lines and `  ` (two-space) lines used as spacers. Normalize to max 1 blank line between paragraphs. Remove lines that are just whitespace.
+
+#### When to Apply
+These fixes apply primarily to **Articles** clipped from X/Twitter and Substack. Tweets and Books rarely have these issues. Run formatting cleanup on any article with:
+- `x.com` or `twitter.com` in the `url` frontmatter field
+- `substackcdn.com` image URLs in the body
+- Any `## ` (empty heading) detected in the file
+
 ### 4. Add Backlinks (Kepano Method)
 
 After frontmatter is set, add wikilinks throughout the body:
@@ -171,9 +300,12 @@ After frontmatter is set, add wikilinks throughout the body:
 ### 5. Batch Processing
 
 For large batches (>5 files), dispatch parallel Opus agents:
-- Group files by type (Articles, Tweets, Books, Podcasts)
-- Each agent processes 3-5 files
-- Use `subagent_type=Explore` for reading, regular Task for writing
+- Group files by **complexity**, not just type
+- **Heavy files** (50+ fixes, e.g., Mission Control with 50 empty headings): solo agent
+- **Medium files** (10-30 fixes): pair 2 per agent
+- **Light files** (1-5 fixes): group 3-4 per agent
+- Use `subagent_type=general-purpose` with `mode=dontAsk` for writing
+- For `/clip fix-formatting`, scan for patterns first (grep for `^## $`, `^\[$`, fake `.md` links) to estimate fix counts before grouping
 
 ### 6. Report Results
 
@@ -231,3 +363,8 @@ Before marking complete:
 - [ ] No personal content miscategorized as `[[Clippings]]`
 - [ ] Backlinks added to body (first mentions only)
 - [ ] No links inside code blocks or URLs
+- [ ] No empty headings (`## ` with no text)
+- [ ] No broken multi-line image links (`[` and `](url)` on separate lines)
+- [ ] No split inline links (link on its own line mid-sentence)
+- [ ] No fake `.md`/`.sh` filename links (e.g., `[CLAUDE.md](https://claude.md/)` → `` `CLAUDE.md` ``)
+- [ ] No excessive blank lines (max 1 between paragraphs)
