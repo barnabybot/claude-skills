@@ -10,6 +10,7 @@ Quick reference for all skills in this repository. Use this to find the right sk
 |-------|----------|--------------|--------------|
 | [9-lov](#9-lov) | Strategy | KPMG 9 Levers of Value framework | "9LoV", "value levers", M&A analysis |
 | [astro-cta-injector](#astro-cta-injector) | Web Dev | Inject CTAs into Astro site content | "add CTAs", "newsletter signup" |
+| [clip](#clip) | Obsidian | Process web clippings: categorize, add topics, backlinks | "/clip", "process clippings", Clippings/ |
 | [docx](#docx) | Documents | Create/edit Word documents with tracked changes | .docx files, redlining |
 | [email-processor](#email-processor) | Productivity | Convert emails to Obsidian vault format | "process email", "add to vault" |
 | [falcon-maintenance](#falcon-maintenance) | M&A | Update Falcon synergy files from meetings | "update synergies", "scan meetings" |
@@ -57,6 +58,7 @@ Quick reference for all skills in this repository. Use this to find the right sk
 
 | Skill | Purpose | Dependencies |
 |-------|---------|--------------|
+| **clip** | Process web clippings: categorize, topics, backlinks | Obsidian vault path |
 | **email-processor** | Convert emails to vault documents | Obsidian vault path |
 | **json-canvas** | Create/edit .canvas files | None |
 | **obsidian-bases** | Create .base files with views/filters | None |
@@ -104,6 +106,17 @@ Quick reference for all skills in this repository. Use this to find the right sk
 - **Use when:** Adding CTAs, newsletter signups, product promotions to blog posts
 - **Features:** Multiple placement strategies, content scoring, batch processing
 - **Dependencies:** Python 3.10+, BeautifulSoup4
+
+---
+
+### clip
+
+**Process Obsidian web clippings: categorize, add topics, normalize frontmatter, and add backlinks.**
+
+- **Use when:** Processing items in Clippings/ subfolders (Articles, Tweets, Books, Podcasts), Readwise imports, Web Clipper content, or notes with `[[Inbox]]` category
+- **Trigger:** `/clip`, "process clippings", "categorize articles", "normalize clippings"
+- **Features:** Frontmatter normalization, topic assignment, Kepano-method backlinks, batch processing, web clipper formatting cleanup
+- **Dependencies:** Obsidian Core vault
 
 ---
 
@@ -318,6 +331,7 @@ Common multi-skill workflows:
 | M&A analysis | 9-lov → synergy-reviewer → falcon-maintenance |
 | New blog post | pre-publish-post-assistant → seo-wordpress-manager |
 | Vault update | email-processor → vault-cascade-update |
+| Clippings processing | clip → vault-cascade-update |
 | Template onboarding | pptx-template-setup → pptx |
 | Skill development | skill-creator → reflect |
 | Site audit | link-analyzer → gsc-assistant → wp-performance-review |
