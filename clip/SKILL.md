@@ -107,6 +107,19 @@ Read content and assign from vault taxonomy. Common topics:
 - `author`: wikilink if identifiable
 - `type`: wikilink (`[[Articles]]`, `[[Tweets]]`, `[[Books]]`, `[[Podcasts]]`)
 - `created`: YYYY-MM-DD
+- `rating`: 1-7 (see below)
+
+**d2) Assign rating** (1-7 scale):
+Read the content and assign a rating based on quality and insight density:
+- **7**: Exceptional — original framework, deeply researched, changes how you think
+- **6**: Excellent — strong thesis, well-argued, memorable insights
+- **5**: Good — solid content, useful takeaways, worth referencing
+- **4**: Decent — competent but mostly familiar ideas, some value
+- **3**: Mediocre — shallow, repetitive, or poorly argued
+- **2**: Weak — clickbait, fluff, or misleading
+- **1**: Skip — content-free or broken
+
+Most articles should land at 4-5. Reserve 6-7 for genuinely standout pieces. Don't inflate.
 
 **e) For Books specifically** - run the normalize-books pattern:
 - Google Books API lookup for genre/description
@@ -280,7 +293,33 @@ These fixes apply primarily to **Articles** clipped from X/Twitter and Substack.
 - `substackcdn.com` image URLs in the body
 - Any `## ` (empty heading) detected in the file
 
-### 4. Add Backlinks (Kepano Method)
+### 4. Create Author Stub (if needed)
+
+After setting the `author` property, check if the author's note exists in `References/`:
+
+```bash
+ls "VAULT/References/Person Name.md" 2>/dev/null
+```
+
+If no note exists, create a minimal stub with context gleaned from the article:
+
+```markdown
+---
+categories:
+  - "[[People]]"
+type: "[[People]]"
+description: "Brief identity — role, company, known for"
+---
+```
+
+Keep it to one line of description. Examples:
+- `"CEO of Wintermute, crypto market maker"`
+- `"Partner at a16z, AI investor"`
+- `"Independent blogger, writes about productivity and Obsidian"`
+
+The description should answer "who is this person?" for future encounters. Don't over-research — use only what's evident from the clipped content. If the note already exists, leave it alone.
+
+### 5. Add Backlinks (Kepano Method)
 
 After frontmatter is set, add wikilinks throughout the body:
 
@@ -299,7 +338,7 @@ After frontmatter is set, add wikilinks throughout the body:
 
 **Use display text when needed:** `[[Full Name|short name]]`
 
-### 5. Batch Processing
+### 6. Batch Processing
 
 For large batches (>5 files), dispatch parallel Opus agents:
 - Group files by **complexity**, not just type
@@ -309,7 +348,7 @@ For large batches (>5 files), dispatch parallel Opus agents:
 - Use `subagent_type=general-purpose` with `mode=dontAsk` for writing
 - For `/clip fix-formatting`, scan for patterns first (grep for `^## $`, `^\[$`, fake `.md` links) to estimate fix counts before grouping
 
-### 6. Report Results
+### 7. Report Results
 
 After processing, output a summary:
 ```
