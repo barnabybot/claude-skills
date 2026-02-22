@@ -154,6 +154,8 @@ $OBS vault=Core move path="Clippings/Tweets/Note Name.md" to="Clippings/Articles
 
 **CLI double-quoting**: `property:set` sometimes wraps values as `'"[[Articles]]"'` (extra quote layer). Always verify with a read after setting properties via CLI. If double-quoted, re-run without the outer quotes or use direct file Edit.
 
+**CLI list properties are BROKEN for multiple values**: `property:set` with `type=list` and comma-separated values creates a SINGLE STRING, not a list. For example, `value='[[Crypto]],[[Philosophy]],[[Web3]]'` produces `topics: "[[Crypto]],[[Philosophy]],[[Web3]]"` (one string) instead of three separate list items. **For multi-value list properties (topics, categories), always use direct file Edit with YAML dash format instead of CLI.** CLI is safe only for single-value lists (e.g., `categories=[[Clippings]]`) or scalar properties (author, type).
+
 ### 3c. Clean Web Clipper Body Formatting
 
 Web clippers (especially from X/Twitter articles and Substack) produce broken markdown. Fix these **before** adding backlinks:
