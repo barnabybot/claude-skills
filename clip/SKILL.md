@@ -295,29 +295,41 @@ These fixes apply primarily to **Articles** clipped from X/Twitter and Substack.
 
 ### 4. Create Author Stub (if needed)
 
-After setting the `author` property, check if the author's note exists in `References/`:
+After setting the `author` property, check if the author's note exists in `References/People/`:
 
 ```bash
-ls "VAULT/References/Person Name.md" 2>/dev/null
+ls "VAULT/References/People/Person Name.md" 2>/dev/null
 ```
 
-If no note exists, create a minimal stub with context gleaned from the article:
+If no note exists, create in `References/People/` following the **People Template**:
 
 ```markdown
 ---
 categories:
   - "[[People]]"
-type: "[[People]]"
+org:
+  - "[[Company Name]]"
 description: "Brief identity — role, company, known for"
+created: YYYY-MM-DD
 ---
+## Meetings
+
+![[Meetings.base#Person]]
 ```
 
-Keep it to one line of description. Examples:
-- `"CEO of Wintermute, crypto market maker"`
+Key fields:
+- `categories`: Always `[[People]]`
+- `org`: Wikilink to their company/organization (list format, can be empty `[]`)
+- `description`: One line answering "who is this person?" — role, company, known for
+- `created`: Today's date
+- **No `type` property** — the People Template doesn't use it
+
+Keep description to one line. Examples:
+- `"CEO of Wintermute, crypto market maker and DeFi infrastructure firm"`
 - `"Partner at a16z, AI investor"`
 - `"Independent blogger, writes about productivity and Obsidian"`
 
-The description should answer "who is this person?" for future encounters. Don't over-research — use only what's evident from the clipped content. If the note already exists, leave it alone.
+Don't over-research — use only what's evident from the clipped content. If the note already exists, leave it alone.
 
 ### 5. Add Backlinks (Kepano Method)
 
